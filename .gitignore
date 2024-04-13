@@ -1,1 +1,5 @@
 .idea
+
+.python-version
+
+docker/mysql/data/*
