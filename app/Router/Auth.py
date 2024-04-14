@@ -1,6 +1,5 @@
 from fastapi import APIRouter
-from fastapi.responses import JSONResponse
-from ..Service.Google.OAuth import *
+from app.Service.Auth.GoogleOAuth import *
 
 auth = APIRouter(prefix='/auth')
 google = APIRouter(prefix='/auth/google')
@@ -17,8 +16,3 @@ async def callback(code: str):
     response = RedirectResponse('/')
     response.set_cookie(key="authorizationToken", value=jwtToken)
     return response
-
-
-@auth.get('/token', tags=['auth'])
-async def getToken(token: str):
-    return JSONResponse(content=checkToken(token))

@@ -3,3 +3,5 @@
 .python-version
 
 docker/mysql/data/*
+
+.env

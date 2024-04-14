@@ -4,14 +4,15 @@ from jose import jwt
 from datetime import *
 from app.Model.Auth.User import User as userModel
 from app.Model.Auth.Login import Login as loginModel
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # Replace these with your own values from the Google Developer Console
-GOOGLE_CLIENT_ID = "153370030601-njfl54m574dsvuja9qdrgn58idaaco40.apps.googleusercontent.com"
-GOOGLE_CLIENT_SECRET = "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"
-GOOGLE_REDIRECT_URI = "http://localhost:8081/auth/google/callback"
-
-USER_MODEL = userModel()
-LOGIN_MODEL = loginModel()
+GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+GOOGLE_REDIRECT_URI = os.getenv('GOOGLE_REDIRECT_URI')
 
 def getOAuthUrl():
     return RedirectResponse(
@@ -41,14 +42,14 @@ def authGoogle(code: str):
     currentDt = datetime.now()
     expireAt = currentDt + timedelta(seconds=googleToken.json().get('expires_in'))
 
-    userInfo = USER_MODEL.getUser(uuid)
+    userInfo = userModel().getUser(uuid)
 
     if userInfo == None:
-        USER_MODEL.insertUser('1', uuid, email, userName)
+        userModel().insertUser('1', uuid, email, userName)
     elif userInfo[3] != email and userInfo[4] != userName:
-        USER_MODEL.updateUser('1', uuid, email, userName)
+        userModel().updateUser('1', uuid, email, userName)
 
-    LOGIN_MODEL.updateAuth(uuid, '1', accessToken, refreshToken, expireAt)
+    loginModel().updateAuth(uuid, '1', accessToken, refreshToken, expireAt)
 
     data = {
         "uuid": uuid,
@@ -57,15 +58,15 @@ def authGoogle(code: str):
         "exp": expireAt
     }
 
-    return jwt.encode(data, 'test', algorithm="HS256")
+    return jwt.encode(data, os.getenv('JWT_SALT_KEY'), algorithm="HS256")
 
 
 def checkToken(token):
-    jwtInfo = jwt.decode(token, 'test', algorithms="HS256")
+    jwtInfo = jwt.decode(token, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
     diffTime = datetime.now() - timedelta(minutes=1)
 
-    if USER_MODEL.getUser(jwtInfo.get('uuid')) is None or datetime.fromtimestamp(jwtInfo.get('exp')) < datetime.now():
+    if userModel().getUser(jwtInfo.get('uuid')) is None or datetime.fromtimestamp(jwtInfo.get('exp')) < datetime.now():
         return {
             'result': 'fail'
         }
@@ -78,7 +79,7 @@ def checkToken(token):
             "token_type": "bearer"
         }
 
-    tokenInfo = LOGIN_MODEL.getTokens(jwtInfo.get('uuid'))
+    tokenInfo = loginModel().getTokens(jwtInfo.get('uuid'))
     beforeRefreshToken = tokenInfo[1]
 
     token_url = "https://accounts.google.com/o/oauth2/token"
@@ -94,7 +95,7 @@ def checkToken(token):
     currentDt = datetime.now()
     expireAt = currentDt + timedelta(seconds=response.json().get('expires_in'))
 
-    LOGIN_MODEL.updateAccessToken(jwtInfo.get('uuid'), '1', newAccessToken, expireAt)
+    loginModel().updateAccessToken(jwtInfo.get('uuid'), '1', newAccessToken, expireAt)
 
     data = {
         "uuid": jwtInfo.get('uuid'),
@@ -102,7 +103,7 @@ def checkToken(token):
         "email": jwtInfo.get('email'),
         "exp": expireAt
     }
-    newJwtToken = jwt.encode(data, 'test', algorithm="HS256")
+    newJwtToken = jwt.encode(data, os.getenv('JWT_SALT_KEY'), algorithm="HS256")
 
     return {
         'result': 'success',
