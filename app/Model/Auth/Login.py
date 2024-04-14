@@ -38,7 +38,7 @@ class Login:
     def updateAccessToken(self, uuid, socialType, accessToken, expireAt):
         sql = "UPDATE login set accessToken = %s, expireAt = %s, updatedAt = CURRENT_TIMESTAMP where uuid = %s and socialType = %s"
 
-        self.cur.execute(sql,(accessToken, expireAt, uuid, socialType))
+        self.cur.execute(sql, (accessToken, expireAt, uuid, socialType))
 
         self.db.commit()
 

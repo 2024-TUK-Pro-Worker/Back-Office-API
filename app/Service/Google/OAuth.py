@@ -1,24 +1,21 @@
-from datetime import *
-from fastapi import FastAPI
 import requests
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.responses import RedirectResponse
 from jose import jwt
+from datetime import *
 from app.Model.Auth.User import User as userModel
 from app.Model.Auth.Login import Login as loginModel
-
-app = FastAPI()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # Replace these with your own values from the Google Developer Console
 GOOGLE_CLIENT_ID = "153370030601-njfl54m574dsvuja9qdrgn58idaaco40.apps.googleusercontent.com"
 GOOGLE_CLIENT_SECRET = "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"
 GOOGLE_REDIRECT_URI = "http://localhost:8081/auth/google/callback"
 
+USER_MODEL = userModel()
+LOGIN_MODEL = loginModel()
 
 def getOAuthUrl():
-    return {
-        "url": f"https://accounts.google.com/o/oauth2/auth?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri={GOOGLE_REDIRECT_URI}&scope=openid%20profile%20email%20https://www.googleapis.com/auth/youtube.upload&access_type=offline"
-    }
+    return RedirectResponse(
+        f"https://accounts.google.com/o/oauth2/auth?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri={GOOGLE_REDIRECT_URI}&scope=openid%20profile%20email%20https://www.googleapis.com/auth/youtube.upload&access_type=offline")
 
 
 def authGoogle(code: str):
@@ -30,10 +27,10 @@ def authGoogle(code: str):
         "redirect_uri": GOOGLE_REDIRECT_URI,
         "grant_type": "authorization_code",
     }
-    response = requests.post(token_url, data=data)
+    googleToken = requests.post(token_url, data=data)
 
-    accessToken = response.json().get("access_token")
-    refreshToken = response.json().get("refresh_token")
+    accessToken = googleToken.json().get("access_token")
+    refreshToken = googleToken.json().get("refresh_token")
 
     user_info = requests.get("https://www.googleapis.com/oauth2/v1/userinfo",
                              headers={"Authorization": f"Bearer {accessToken}"})
@@ -42,22 +39,16 @@ def authGoogle(code: str):
     email = user_info.json().get("email")
     userName = user_info.json().get("name")
     currentDt = datetime.now()
-    expireAt = currentDt + timedelta(seconds=response.json().get('expires_in'))
+    expireAt = currentDt + timedelta(seconds=googleToken.json().get('expires_in'))
 
-    userM = userModel()
-    loginM = loginModel()
-
-    userInfo = userM.getUser(uuid)
+    userInfo = USER_MODEL.getUser(uuid)
 
     if userInfo == None:
-        userM.insertUser('1', uuid, email, userName)
+        USER_MODEL.insertUser('1', uuid, email, userName)
     elif userInfo[3] != email and userInfo[4] != userName:
-        userM.updateUser('1', uuid, email, userName)
+        USER_MODEL.updateUser('1', uuid, email, userName)
 
-    loginM.updateAuth(uuid, '1', accessToken, refreshToken, expireAt)
-
-    del userM
-    del loginM
+    LOGIN_MODEL.updateAuth(uuid, '1', accessToken, refreshToken, expireAt)
 
     data = {
         "uuid": uuid,
@@ -65,28 +56,21 @@ def authGoogle(code: str):
         "email": email,
         "exp": expireAt
     }
-    jwtToken = jwt.encode(data, 'test', algorithm="HS256")
 
-    return {
-        "jwtToken": jwtToken,
-        "token_type": "bearer"
-    }
+    return jwt.encode(data, 'test', algorithm="HS256")
 
 
 def checkToken(token):
-    userM = userModel()
-    loginM = loginModel()
-
     jwtInfo = jwt.decode(token, 'test', algorithms="HS256")
 
-    diffTime = datetime.now() - timedelta(minutes=5)
+    diffTime = datetime.now() - timedelta(minutes=1)
 
-    if userM.getUser(jwtInfo.get('uuid')) is None:
+    if USER_MODEL.getUser(jwtInfo.get('uuid')) is None or datetime.fromtimestamp(jwtInfo.get('exp')) < datetime.now():
         return {
             'result': 'fail'
         }
 
-    if datetime.fromtimestamp(jwtInfo.get('exp')) >= diffTime:
+    if not datetime.fromtimestamp(jwtInfo.get('exp')) >= diffTime:
         return {
             'result': 'success',
             'status': 'alive',
@@ -94,7 +78,7 @@ def checkToken(token):
             "token_type": "bearer"
         }
 
-    tokenInfo = loginM.getTokens(jwtInfo.get('uuid'))
+    tokenInfo = LOGIN_MODEL.getTokens(jwtInfo.get('uuid'))
     beforeRefreshToken = tokenInfo[1]
 
     token_url = "https://accounts.google.com/o/oauth2/token"
@@ -110,9 +94,7 @@ def checkToken(token):
     currentDt = datetime.now()
     expireAt = currentDt + timedelta(seconds=response.json().get('expires_in'))
 
-    loginM.updateAccessToken(jwtInfo.get('uuid'), '1', newAccessToken, expireAt)
-
-    del loginM
+    LOGIN_MODEL.updateAccessToken(jwtInfo.get('uuid'), '1', newAccessToken, expireAt)
 
     data = {
         "uuid": jwtInfo.get('uuid'),
