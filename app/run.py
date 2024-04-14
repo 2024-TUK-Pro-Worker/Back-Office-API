@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
 from app.Router.Auth import auth, google
 import uvicorn
@@ -34,7 +34,8 @@ async def check_jwt(request: Request, call_next):
 
 
 @app.get('/')
-def index():
+def index(response: Response):
+    response.delete_cookie('authorizationToken')
     return {'msg': 'Main'}
 
 
