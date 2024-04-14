@@ -17,9 +17,9 @@ class Login:
 
         return row
 
-    def getTokens(self, uuid):
+    def getAuthInfo(self, uuid):
         try:
-            sql = "SELECT accessToken, refreshToken FROM login WHERE uuid = %s"
+            sql = "SELECT accessToken, refreshToken, idToken, expireAt, scope FROM login WHERE uuid = %s"
             self.cur.execute(sql, (uuid))
             row = self.cur.fetchone()
         finally:
@@ -27,20 +27,24 @@ class Login:
 
         return row
 
-    def updateAuth(self, uuid, socialType, accessToken, refreshToken, expireAt):
+    def updateAuth(self, uuid, socialType, accessToken, refreshToken, idToken, expiresIn, scope, expireAt):
         try:
             sql = ("""
-                   INSERT INTO login (uuid, socialType, accessToken, refreshToken, expireAt, updatedAt) 
-                   VALUES (%s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
+                   INSERT INTO login (uuid, socialType, accessToken, refreshToken, idToken, expiresIn, scope, expireAt, updatedAt) 
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
                    ON DUPLICATE KEY UPDATE 
                    accessToken = %s,
-                   refreshToken = %s,
+                   idToken = %s,
+                   expiresIn = %s,
+                   scope = %s,
                    expireAt = %s,
                    updatedAt = CURRENT_TIMESTAMP
                    """)
 
-            self.cur.execute(sql,
-                             (uuid, socialType, accessToken, refreshToken, expireAt, accessToken, refreshToken, expireAt))
+            self.cur.execute(sql, (
+                uuid, socialType, accessToken, refreshToken, idToken, expiresIn, scope, expireAt,
+                accessToken, idToken, expiresIn, scope, expireAt
+            ))
 
             self.db.commit()
         except:

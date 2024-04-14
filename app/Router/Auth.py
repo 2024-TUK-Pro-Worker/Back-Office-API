@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 from app.Service.Auth.GoogleOAuth import *
 
-auth = APIRouter(prefix='/auth')
 google = APIRouter(prefix='/auth/google')
 
 

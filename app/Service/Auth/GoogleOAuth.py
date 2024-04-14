@@ -9,14 +9,13 @@ import os
 
 load_dotenv()
 
-# Replace these with your own values from the Google Developer Console
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
 GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
 GOOGLE_REDIRECT_URI = os.getenv('GOOGLE_REDIRECT_URI')
 
 def getOAuthUrl():
     return RedirectResponse(
-        f"https://accounts.google.com/o/oauth2/auth?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri={GOOGLE_REDIRECT_URI}&scope=openid%20profile%20email%20https://www.googleapis.com/auth/youtube.upload&access_type=offline")
+        f"https://accounts.google.com/o/oauth2/auth?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri={GOOGLE_REDIRECT_URI}&scope=openid%20profile%20email%20https://www.googleapis.com/auth/youtube.upload&prompt=consent&&access_type=offline")
 
 
 def authGoogle(code: str):
@@ -32,6 +31,9 @@ def authGoogle(code: str):
 
     accessToken = googleToken.json().get("access_token")
     refreshToken = googleToken.json().get("refresh_token")
+    idToken = googleToken.json().get("id_token")
+    expiresIn = googleToken.json().get("expires_in")
+    scope = googleToken.json().get("scope")
 
     user_info = requests.get("https://www.googleapis.com/oauth2/v1/userinfo",
                              headers={"Authorization": f"Bearer {accessToken}"})
@@ -49,7 +51,10 @@ def authGoogle(code: str):
     elif userInfo[3] != email and userInfo[4] != userName:
         userModel().updateUser('1', uuid, email, userName)
 
-    loginModel().updateAuth(uuid, '1', accessToken, refreshToken, expireAt)
+    if refreshToken == None:
+        refreshToken = loginModel().getAuthInfo(uuid)[1]
+
+    loginModel().updateAuth(uuid, '1', accessToken, refreshToken, idToken, expiresIn, scope, expireAt)
 
     data = {
         "uuid": uuid,

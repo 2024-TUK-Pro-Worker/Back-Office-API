@@ -1,36 +1,51 @@
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
-from app.Router.Auth import auth, google
+from app.Router.Auth import google
+from app.Router.Youtube import youtube
+from dotenv import load_dotenv
 import uvicorn
+import os
+from jose import jwt
+from datetime import datetime
+
+load_dotenv()
 
 app = FastAPI()
 
-app.include_router(auth)
 app.include_router(google)
+app.include_router(youtube)
 
 
 @app.middleware("http")
 async def check_jwt(request: Request, call_next):
-    authExcept = False
     locationUrl = request.url.path
-    authToken = request.headers.get('Authorization')
+    jwtToken = request.headers.get('Authorization')
 
     exceptUrl = (
-        '/',  # 테스트 index
         '/auth/google',
+        '/'
     )
+
     for target in exceptUrl:
         if target in locationUrl:
-            authExcept = True
+            response = await call_next(request)
+            return response
 
-    if not authExcept and authToken is None:
+    if jwtToken is None:
         return JSONResponse({
             'result': 'fail',
             'message': '403 forbidden'
         }, status_code=403)
 
-    response = await call_next(request)
-    return response
+    jwtInfo = jwt.decode(jwtToken, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
+
+    if datetime.fromtimestamp(jwtInfo.get('exp')) < datetime.now():
+        return JSONResponse({
+            'result': 'fail',
+            'message': '403 forbidden'
+        }, status_code=403)
+
+    return await call_next(request)
 
 
 @app.get('/')
