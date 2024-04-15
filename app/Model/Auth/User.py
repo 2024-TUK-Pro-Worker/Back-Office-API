@@ -24,7 +24,7 @@ class User:
                 self.cur.execute(sql)
             else:
                 sql = "SELECT * FROM user WHERE uuid = %s"
-                self.cur.execute(sql, (uuid))
+                self.cur.execute(sql, (uuid,))
 
             row = self.cur.fetchone()
         finally:

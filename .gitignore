@@ -8,4 +8,4 @@ docker/mysql/data/*
 
 app/Config/*
 
-tmp/*
+app/Resource/Upload/*

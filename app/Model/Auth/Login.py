@@ -20,7 +20,7 @@ class Login:
     def getAuthInfo(self, uuid):
         try:
             sql = "SELECT accessToken, refreshToken, idToken, expireAt, scope FROM login WHERE uuid = %s"
-            self.cur.execute(sql, (uuid))
+            self.cur.execute(sql, (uuid,))
             row = self.cur.fetchone()
         finally:
             self.db.close()
