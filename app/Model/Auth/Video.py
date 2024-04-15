@@ -30,7 +30,7 @@ class Video:
 
     def getVideoDescription(self, uuid, videoId):
         try:
-            sql = "SELECT title, content, tags FROM video WHERE uuid = %s AND id = %s"
+            sql = "SELECT gptTitle, title, content, tags FROM video WHERE uuid = %s AND id = %s"
             self.cur.execute(sql, (uuid, videoId))
 
             row = self.cur.fetchone()

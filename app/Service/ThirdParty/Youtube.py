@@ -25,9 +25,10 @@ class Youtube:
     def uploadVideo(self, uuid, videoId):
         try:
             videoDescription = videoModel().getVideoDescription(uuid, videoId)
-            videoTitle = videoDescription[0]
-            videoContent = videoDescription[1]
-            videotags = videoDescription[2].split(',')
+            gptTitle = videoDescription[0]
+            videoTitle = videoDescription[1]
+            videoContent = videoDescription[2]
+            videotags = videoDescription[3].split(',')
 
             # 동영상 업로드 정보 설정
             requestBody = {
@@ -42,24 +43,40 @@ class Youtube:
             }
 
             # 동영상 업로드 요청 생성
-            media = MediaFileUpload(f'Resource/Upload/{videoTitle}.mp4')
+            media = MediaFileUpload(f'Resource/Upload/{gptTitle}.mp4')
             insertRequest = self.youtubeService.videos().insert(
                 part='snippet,status',
                 body=requestBody,
                 media_body=media
             )
 
-            # 동영상 업로드 실행
             response = insertRequest.execute()
 
-            # 업로드 성공 시 동영상 ID 반환
-            if 'id' in response:
-                videoModel().updateVideoDescription(uuid, videoId, response['id'])
-            else:
+            if 'id' not in response:
                 raise Exception('업로드 실패')
 
+            videoModel().updateVideoDescription(uuid, videoId, response['id'])
+
+            return {
+                'result': True,
+                'uuid': uuid,
+                'videoId': videoId
+            }
+
+        except Exception as e:
+            print('동영상 삭제 중 오류 발생:', e)
+
+            return {
+                'result': False,
+                'message': e
+            }
         except HttpError as e:
             print('동영상 업로드 중 오류 발생:', e)
+
+            return {
+                'result': False,
+                'message': e
+            }
 
 
     def delVideo(self, uuid, videoId):
@@ -71,15 +88,30 @@ class Youtube:
                 id=uploadId
             )
 
-            # 동영상 업로드 실행
             response = deleteRequest.execute()
 
-            # 업로드 성공 시 동영상 ID 반환
-            if 'id' in response:
-                videoModel().deleteVideo(uuid, videoId)
-                print(response)
-            else:
-                print('동영상 삭제 실패.')
+            if response != '':
+                raise Exception('동영상 삭제 실패.')
 
+            videoModel().deleteVideo(uuid, videoId)
+
+            return {
+                'result': True,
+                'uuid': uuid,
+                'videoId': videoId
+            }
+
+        except Exception as e:
+            print('동영상 삭제 중 오류 발생:', e)
+
+            return {
+                'result': False,
+                'message': e
+            }
         except HttpError as e:
             print('동영상 삭제 중 오류 발생:', e)
+
+            return {
+                'result': False,
+                'message': e
+            }

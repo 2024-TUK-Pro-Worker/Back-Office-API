@@ -22,12 +22,11 @@ async def check_jwt(request: Request, call_next):
     jwtToken = request.headers.get('Authorization')
 
     exceptUrl = (
-        '/auth/google',
-        '/'
+        '/auth/google'
     )
 
     for target in exceptUrl:
-        if target in locationUrl:
+        if target in locationUrl or locationUrl == '/':
             response = await call_next(request)
             return response
 
