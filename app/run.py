@@ -1,10 +1,11 @@
+import uvicorn
+import os
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
 from app.Router.Auth import google
 from app.Router.Youtube import youtube
+from app.Router.Prompt import prompt
 from dotenv import load_dotenv
-import uvicorn
-import os
 from jose import jwt
 from datetime import datetime
 
@@ -12,8 +13,10 @@ load_dotenv()
 
 app = FastAPI()
 
+# Router 추가
 app.include_router(google)
 app.include_router(youtube)
+app.include_router(prompt)
 
 
 @app.middleware("http")

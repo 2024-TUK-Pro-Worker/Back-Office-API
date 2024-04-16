@@ -6,6 +6,4 @@ docker/mysql/data/*
 
 .env
 
-app/Config/*
-
 app/Resource/Upload/*

@@ -2,23 +2,15 @@ import os
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from jose import jwt
-from app.Service.ThirdParty.Youtube import Youtube as YoutubeService
-from pydantic import BaseModel
+from app.Service.Account.Prompt import getPrompt, updatePrompt
 
-youtube = APIRouter(prefix='/api/youtube')
-
-
-class VideoActionParam(BaseModel):
-    videoId: int
+prompt = APIRouter(prefix='/api/account/prompt')
 
 
-@youtube.post('/upload', tags=['youtube'])
-async def upload(request: Request, videoActionParam: VideoActionParam):
-    params = videoActionParam.dict()
+@prompt.get('/', tags=['prompt'])
+async def index(request: Request):
     jwtData = jwt.decode(request.headers.get('Authorization'), os.getenv('JWT_SALT_KEY'), algorithms="HS256")
-
-    result = YoutubeService(jwtData).uploadVideo(jwtData.get('uuid'), params['videoId'])
-
+    result = getPrompt(jwtData.get('uuid'))
     if result:
         return JSONResponse({
             'result': 'success'
@@ -29,12 +21,10 @@ async def upload(request: Request, videoActionParam: VideoActionParam):
         }, status_code=200)
 
 
-@youtube.delete('/delete', tags=['youtube'])
-async def delete(request: Request, videoActionParam: VideoActionParam):
-    params = videoActionParam.dict()
+@prompt.patch('/update', tags=['prompt'])
+async def update(request: Request):
     jwtData = jwt.decode(request.headers.get('Authorization'), os.getenv('JWT_SALT_KEY'), algorithms="HS256")
-    result = YoutubeService(jwtData).delVideo(jwtData.get('uuid'), params['videoId'])
-
+    result = updatePrompt(jwtData.get('uuid'))
     if result:
         return JSONResponse({
             'result': 'success'
