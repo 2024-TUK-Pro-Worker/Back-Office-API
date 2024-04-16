@@ -12,7 +12,7 @@ class VideoActionParam(BaseModel):
     videoId: int
 
 
-@youtube.put('/upload', tags=['youtube'])
+@youtube.post('/upload', tags=['youtube'])
 async def upload(request: Request, videoActionParam: VideoActionParam):
     params = videoActionParam.dict()
     jwtData = jwt.decode(request.headers.get('Authorization'), os.getenv('JWT_SALT_KEY'), algorithms="HS256")
