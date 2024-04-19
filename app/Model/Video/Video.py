@@ -76,6 +76,19 @@ class Video:
         finally:
             self.db.close()
 
+    def setVideoInfo(self, uuid, videoId, title, description, tags):
+        try:
+            sql = "UPDATE video set title = %s, content = %s, tags = %s, uploadAt = CURRENT_TIMESTAMP where uuid = %s and id = %s"
+
+            self.cur.execute(sql, (title, description, tags, uuid, videoId))
+
+            self.db.commit()
+        except:
+            self.db.close()
+            return False
+        finally:
+            self.db.close()
+
     def deleteVideo(self, uuid, videoId):
         try:
             sql = "UPDATE video set isDeleted = %s, deletedAt = CURRENT_TIMESTAMP where uuid = %s and id = %s"

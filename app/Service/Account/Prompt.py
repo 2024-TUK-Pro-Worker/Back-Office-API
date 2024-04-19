@@ -1,7 +1,14 @@
-
+from app.Model.Account.Prompt import Prompt as promptModel
 
 def getPrompt(uuid):
-    return True
+    try:
+        return promptModel().getPrompt(uuid)[0]
+    except:
+        return ''
 
-def updatePrompt(uuid):
-    return True
+def updatePrompt(uuid, content):
+    try:
+        promptModel().updatePrompt(uuid, content)
+        return True
+    except:
+        return False

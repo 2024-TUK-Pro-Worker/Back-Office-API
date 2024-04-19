@@ -1,13 +1,10 @@
 import uvicorn
-import os
-from fastapi import FastAPI, Request, Response
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, Response
 from app.Router.Auth import google
 from app.Router.Youtube import youtube
 from app.Router.Prompt import prompt
+from app.Router.Video import video
 from dotenv import load_dotenv
-from jose import jwt
-from datetime import datetime
 
 load_dotenv()
 
@@ -17,37 +14,7 @@ app = FastAPI()
 app.include_router(google)
 app.include_router(youtube)
 app.include_router(prompt)
-
-
-@app.middleware("http")
-async def check_jwt(request: Request, call_next):
-    locationUrl = request.url.path
-    jwtToken = request.headers.get('Authorization')
-
-    exceptUrl = (
-        '/auth/google'
-    )
-
-    for target in exceptUrl:
-        if target in locationUrl or locationUrl == '/':
-            response = await call_next(request)
-            return response
-
-    if jwtToken is None:
-        return JSONResponse({
-            'result': 'fail',
-            'message': '403 forbidden'
-        }, status_code=403)
-
-    jwtInfo = jwt.decode(jwtToken, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
-
-    if datetime.fromtimestamp(jwtInfo.get('exp')) < datetime.now():
-        return JSONResponse({
-            'result': 'fail',
-            'message': '403 forbidden'
-        }, status_code=403)
-
-    return await call_next(request)
+app.include_router(video)
 
 
 @app.get('/')

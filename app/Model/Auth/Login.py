@@ -10,7 +10,6 @@ class Login:
 
     def getAuthInfo(self, uuid):
         try:
-            query = session.query(LoginDto).filter(LoginDto.uuid == uuid).first()
             sql = "SELECT accessToken, refreshToken, idToken, expireAt, scope FROM login WHERE uuid = %s"
             self.cur.execute(sql, (uuid,))
             row = self.cur.fetchone()

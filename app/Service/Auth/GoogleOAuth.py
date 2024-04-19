@@ -55,8 +55,6 @@ def authGoogle(code: str):
     elif userInfo[3] != email and userInfo[4] != userName:
         userModel().updateUser('1', uuid, email, userName)
 
-    refreshToken = loginModel().getAuthInfo(uuid)[1]
-
     if refreshToken == None:
         refreshToken = loginModel().getAuthInfo(uuid)[1]
 

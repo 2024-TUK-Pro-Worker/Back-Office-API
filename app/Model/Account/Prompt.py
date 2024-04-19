@@ -19,7 +19,7 @@ class Prompt:
 
     def getPrompt(self, uuid):
         try:
-            sql = "SELECT * FROM prompt WHERE uuid = %s"
+            sql = "SELECT content FROM prompt WHERE uuid = %s"
             self.cur.execute(sql, (uuid,))
 
             row = self.cur.fetchone()
@@ -46,11 +46,15 @@ class Prompt:
         finally:
             self.db.close()
 
-    def updatePrompt(self, socialType, uuid, email, name):
+    def updatePrompt(self, uuid, content):
         try:
-            sql = "UPDATE user set email = %s, name = %s, updatedAt = CURRENT_TIMESTAMP where uuid = %s and socialType = %s"
+            sql = """
+                  UPDATE prompt 
+                  SET content = %s 
+                  WHERE uuid = %s
+                  """
 
-            self.cur.execute(sql, (email, name, uuid, socialType))
+            self.cur.execute(sql, (content, uuid))
 
             self.db.commit()
         except:
