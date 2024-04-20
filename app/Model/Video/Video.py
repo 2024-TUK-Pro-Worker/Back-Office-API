@@ -18,6 +18,19 @@ class Video:
 
         return row
 
+    def getVideoList(self, uuid):
+        result = []
+        try:
+            sql = """
+                  SELECT * FROM video WHERE uuid = %s   
+                  """
+            self.cur.execute(sql, (uuid, ))
+            result = self.cur.fetchall()
+        finally:
+            self.db.close()
+
+        return result
+
     def getVideoInfo(self, uuid, createdDate=date.today()):
         try:
             sql = "SELECT * FROM video WHERE uuid = %s AND createdAt BETWEEN %s AND %s"
