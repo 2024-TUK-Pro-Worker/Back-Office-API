@@ -20,7 +20,7 @@ async def index(request: Request):
         return JSONResponse({
             'result': 'success',
             'data': {
-                'content': result
+                'content': result.content
             }
         }, status_code=200)
     else:

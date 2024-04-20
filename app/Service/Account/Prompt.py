@@ -1,8 +1,9 @@
-from app.Model.Account.Prompt import Prompt as promptModel
+from app.Model.Account.Prompt.Schema import Prompt as promptModel
 
-def getPrompt(uuid):
+
+def getPrompt(uuid: str):
     try:
-        return promptModel().getPrompt(uuid)[0]
+        return promptModel().getPrompt(uuid)
     except:
         return ''
 
