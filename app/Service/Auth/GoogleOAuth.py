@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from fastapi.responses import RedirectResponse
 from app.Model.Auth.User import User as userModel
 from app.Model.Auth.Login import Login as loginModel
-from app.Model.Account.Prompt.Schema import Prompt as promptModel
+from app.Model.Account.Prompt import Prompt as promptModel
 
 load_dotenv()
 

@@ -13,5 +13,5 @@ async def getUrl():
 async def callback(code: str):
     jwtToken = authGoogle(code)
     response = RedirectResponse('/')
-    response.set_cookie(key="authorizationToken", value=jwtToken)
+    response.set_cookie(key="authorization", value=jwtToken)
     return response

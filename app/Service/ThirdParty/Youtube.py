@@ -4,7 +4,7 @@ from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
 from google.oauth2.credentials import Credentials
 from app.Model.Auth.Login import Login as loginModel
-from app.Model.Video.Schema import Video as videoModel
+from app.Model.Video.Video import Video as videoModel
 
 
 class Youtube:
@@ -24,18 +24,14 @@ class Youtube:
 
     def uploadVideo(self, uuid, videoId):
         try:
-            videoDescription = videoModel().getVideoDescription(uuid, videoId)
-            gptTitle = videoDescription[0]
-            videoTitle = videoDescription[1]
-            videoContent = videoDescription[2]
-            videotags = videoDescription[3].split(',')
+            videoDescription = videoModel().getVideoInfo(uuid, videoId)
 
             # 동영상 업로드 정보 설정
             requestBody = {
                 'snippet': {
-                    'title': videoTitle,
-                    'description': videoContent,
-                    'tags': videotags
+                    'title': videoDescription.title,
+                    'description': videoDescription.content,
+                    'tags': videoDescription.tags
                 },
                 'status': {
                     'privacyStatus': 'public'
@@ -43,7 +39,7 @@ class Youtube:
             }
 
             # 동영상 업로드 요청 생성
-            media = MediaFileUpload(f'Resource/Upload/{gptTitle}.mp4')
+            media = MediaFileUpload(f'Resource/Upload/{videoDescription.gptTitle}.mp4')
             insertRequest = self.youtubeService.videos().insert(
                 part='snippet,status',
                 body=requestBody,

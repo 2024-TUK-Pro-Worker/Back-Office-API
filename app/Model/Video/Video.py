@@ -26,20 +26,25 @@ class Video:
 
         return result
 
-    def getVideoDescription(self, uuid, videoId):
+    def getVideoInfo(self, uuid, videoId):
         try:
-            queryResult = self.db.query(Models.Video.gptTitle, Models.Video.title, Models.Video.content,
-                                        Models.Video.tags).filter(
-                and_(Models.Video.id == videoId, Models.Video.uuid == uuid)).all()
+            queryResult = self.db.query(Models.Video).filter(
+                and_(
+                    Models.Video.id == videoId,
+                    Models.Video.uuid == uuid
+                )
+            ).first()
 
-            for row in queryResult:
-                tmp = row.__dict__
-                tmp.pop('_sa_instance_state', None)
-                result = tmp
+            data = queryResult.__dict__
+            data.pop('_sa_instance_state', None)
+            data['tags'] = data['tags'].split(',')
+            data['createdAt'] = str(data['createdAt'])
+            data['uploadAt'] = str(data['uploadAt']) if data['uploadAt'] is not None else data['uploadAt']
+            data['deletedAt'] = str(data['deletedAt']) if data['deletedAt'] is not None else data['deletedAt']
         finally:
             self.db.close()
 
-        return result
+        return data
 
     def getVideoId(self, uuid, videoId):
         result = {}
@@ -67,7 +72,8 @@ class Video:
 
     def updateVideoDescription(self, uuid, videoId, uploadId):
         try:
-            self.db.query(Models.Video).filter(and_(Models.Video.id == videoId, Models.Video.uuid == uuid)).update({'uploadId': uploadId, 'uploadAt': 'CURRENT_TIMESTAMP'})
+            self.db.query(Models.Video).filter(and_(Models.Video.id == videoId, Models.Video.uuid == uuid)).update(
+                {'uploadId': uploadId, 'uploadAt': 'CURRENT_TIMESTAMP'})
             self.db.commit()
         except:
             self.db.close()

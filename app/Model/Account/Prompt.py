@@ -11,6 +11,8 @@ class Prompt:
     def getPrompt(self, uuid):
         try:
             data = self.db.query(Models.Prompt).filter(Models.Prompt.uuid == uuid).first()
+            data = data.__dict__
+            data.pop('_sa_instance_state', None)
         finally:
             self.db.close()
         return data

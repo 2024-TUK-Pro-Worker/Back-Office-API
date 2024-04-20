@@ -1,4 +1,4 @@
-from app.Model.Account.Prompt.Schema import Prompt as promptModel
+from app.Model.Account.Prompt import Prompt as promptModel
 
 
 def getPrompt(uuid: str):
