@@ -1,4 +1,4 @@
-from app.Config.database import engine, SessionLocal
+from app.Config.DataBase.database import engine, SessionLocal
 from app.Model import Models
 
 Models.Base.metadata.create_all(bind=engine)

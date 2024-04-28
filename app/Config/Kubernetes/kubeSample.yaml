@@ -1,0 +1,30 @@
+apiVersion: v1
+clusters:
+- cluster:
+    extensions:
+    - extension:
+        last-update: Sat, 30 Mar 2024 21:29:02 KST
+        provider: minikube.sigs.k8s.io
+        version: v1.32.0
+      name: cluster_info
+    server: {ServerHOST}
+  name: {name}
+contexts:
+- context:
+    cluster: {cluster}
+    extensions:
+    - extension:
+        last-update: Sat, 30 Mar 2024 21:29:02 KST
+        provider: minikube.sigs.k8s.io
+        version: v1.32.0
+      name: context_info
+    namespace: {namespace}
+    user: {user}
+  name: {name}
+current-context: {current-context}
+kind: Config
+preferences: {}
+users:
+- name: {name}
+  user:
+    token: {authToken}

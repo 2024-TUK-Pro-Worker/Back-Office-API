@@ -3,7 +3,7 @@ from typing import Optional
 from fastapi import FastAPI, Cookie
 from app.Router.Auth import google
 from app.Router.Youtube import youtube
-from app.Router.Prompt import prompt
+from app.Router.Account import prompt, scheduler
 from app.Router.Video import video
 from dotenv import load_dotenv
 
@@ -15,17 +15,13 @@ app = FastAPI()
 app.include_router(google)
 app.include_router(youtube)
 app.include_router(prompt)
+app.include_router(scheduler)
 app.include_router(video)
 
 
 @app.get('/')
 def index(authorization: Optional[str] = Cookie(None)):
     return {'JWT': authorization}
-
-
-@app.get('/test')
-def test():
-    return {'msg': 'Test'}
 
 
 if __name__ == "__main__":

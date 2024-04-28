@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Text, INT, DateTime, CHAR
-from app.Config.database import Base
+from app.Config.DataBase.database import Base
 
 
 class Video(Base):
@@ -17,8 +17,16 @@ class Video(Base):
     isDeleted = Column(CHAR(1), index=True, nullable=False, default='N')
     deletedAt = Column(DateTime)
 
+
 class Prompt(Base):
     __tablename__ = "prompt"
 
     uuid = Column(String(255), primary_key=True, index=True)
     content = Column(Text)
+
+
+class Schedule(Base):
+    __tablename__ = "schedule"
+
+    uuid = Column(String(255), primary_key=True, index=True)
+    cron_schedule = Column(String(255))
