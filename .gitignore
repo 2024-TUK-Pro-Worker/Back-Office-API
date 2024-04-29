@@ -5,6 +5,7 @@
 docker/web/*
 docker/mysql/data/*
 !docker/mysql/docker-compose.yml
+!docker/web/docker-compose.yml
 !docker/web/Dockerfile
 
 .env
