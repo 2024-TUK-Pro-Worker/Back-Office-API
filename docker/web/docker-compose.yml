@@ -9,5 +9,5 @@ services:
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
     volumes:
-      - ./app:/home/app
+      - ../../app:/home/app
       - ${SERVER_STORAGE_PATH}:/home/app/Resource/Storage
