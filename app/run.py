@@ -1,3 +1,4 @@
+import os
 import uvicorn
 from typing import Optional
 from fastapi import FastAPI, Cookie
@@ -26,4 +27,4 @@ def index(authorization: Optional[str] = Cookie(None)):
 
 
 if __name__ == "__main__":
-    uvicorn.run("run:app", host='0.0.0.0', port=8081, log_level="info", reload=True)
+    uvicorn.run("run:app", host='0.0.0.0', port=int(os.getenv('SERVER_PORT')), log_level="info", reload=True)
