@@ -39,7 +39,7 @@ class Youtube:
             }
 
             # 동영상 업로드 요청 생성
-            media = MediaFileUpload(f'Resource/Upload/{videoDescription.gptTitle}.mp4')
+            media = MediaFileUpload(f'Resource/Storage/{uuid}/Upload/{videoDescription.gptTitle}.mp4')
             insertRequest = self.youtubeService.videos().insert(
                 part='snippet,status',
                 body=requestBody,

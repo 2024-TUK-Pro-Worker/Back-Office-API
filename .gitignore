@@ -6,6 +6,6 @@ docker/mysql/data/*
 
 .env
 
-app/Resource/Upload/*
+app/Resource/Storage/*
 
 app/Config/Kubernetes/kube.yaml

@@ -69,7 +69,7 @@ def __createCronjob(uuid, schedule='*/20 * * * *'):
         # 동작하고 있는 스케줄러가 종료 될 때까지 대기
         time.sleep(5)
 
-    with open("Config/Kubernetes/cron.yaml") as f:
+    with open("Config/Kubernetes/BaseCronjob.yaml") as f:
         cronjob_yaml = yaml.safe_load(f)
         f.close()
 

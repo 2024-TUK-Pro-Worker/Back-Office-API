@@ -55,6 +55,10 @@ def authGoogle(code: str):
     elif userInfo[3] != email and userInfo[4] != userName:
         userModel().updateUser('1', uuid, email, userName)
 
+    userResourcePath = f"./Resource/Storage/{uuid}"
+    if not os.path.isdir(userResourcePath):
+        os.makedirs(userResourcePath)
+
     if refreshToken == None:
         refreshToken = loginModel().getAuthInfo(uuid)[1]
 

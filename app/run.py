@@ -3,7 +3,7 @@ from typing import Optional
 from fastapi import FastAPI, Cookie
 from app.Router.Auth import google
 from app.Router.Youtube import youtube
-from app.Router.Account import prompt, scheduler
+from app.Router.Account import prompt, scheduler, bgm
 from app.Router.Video import video
 from dotenv import load_dotenv
 
@@ -17,6 +17,7 @@ app.include_router(youtube)
 app.include_router(prompt)
 app.include_router(scheduler)
 app.include_router(video)
+app.include_router(bgm)
 
 
 @app.get('/')

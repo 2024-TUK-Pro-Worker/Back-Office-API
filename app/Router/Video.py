@@ -4,7 +4,7 @@ from jose import jwt
 from pydantic import BaseModel
 from fastapi import APIRouter, Cookie
 from fastapi.responses import JSONResponse
-from app.Service.Video.Detail import getList, updateDetail, getDetail
+from app.Service.Video.Detail import getList, updateDetail, getDetail, insertIntoVideo
 
 video = APIRouter(prefix='/api/video')
 
@@ -14,6 +14,11 @@ class RQ_setDetail(BaseModel):
     title: str
     content: str
     tags: list
+
+
+class RQ_appendBgmToVideo(BaseModel):
+    videoId: int
+    bgmFileName: str
 
 
 @video.get('/list', tags=['prompt'])
@@ -58,6 +63,22 @@ async def setDetail(rq_setDetail: RQ_setDetail, authorization: Optional[str] = C
                           rq_setDetail.tags)
 
     if result != '':
+        return JSONResponse({
+            'result': 'success'
+        }, status_code=200)
+    else:
+        return JSONResponse({
+            'result': 'fail'
+        }, status_code=200)
+
+
+@video.patch('/bgm/set', tags=['prompt'])
+async def setBgmToVideo(rq_appendBgmToVideo: RQ_appendBgmToVideo, authorization: Optional[str] = Cookie(None)):
+    jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
+
+    result = insertIntoVideo(jwtData.get('uuid'), rq_appendBgmToVideo.videoId, rq_appendBgmToVideo.bgmFileName)
+
+    if result:
         return JSONResponse({
             'result': 'success'
         }, status_code=200)
