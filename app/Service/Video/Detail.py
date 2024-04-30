@@ -1,7 +1,7 @@
 import os
 from pydub import *
 from moviepy.editor import *
-from app.Model.Video.Video import Video as videoModel
+from Model.Video.Video import Video as videoModel
 
 
 def getList(uuid):

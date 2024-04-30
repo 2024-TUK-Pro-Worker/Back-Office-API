@@ -4,7 +4,7 @@ from jose import jwt
 from pydantic import BaseModel
 from fastapi import APIRouter, Cookie
 from fastapi.responses import JSONResponse
-from app.Service.Video.Detail import getList, updateDetail, getDetail, insertIntoVideo
+from Service.Video.Detail import getList, updateDetail, getDetail, insertIntoVideo
 
 video = APIRouter(prefix='/api/video')
 

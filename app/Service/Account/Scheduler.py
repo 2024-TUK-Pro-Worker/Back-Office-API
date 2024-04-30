@@ -4,7 +4,7 @@ import yaml
 from kubernetes import utils
 from kubernetes import config
 from kubernetes import client as kubernetes_client
-from app.Model.Account.Schedule import Schedule as scheduleModel
+from Model.Account.Schedule import Schedule as scheduleModel
 
 
 def getJobScheduleInfo(uuid):

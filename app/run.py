@@ -2,10 +2,10 @@ import os
 import uvicorn
 from typing import Optional
 from fastapi import FastAPI, Cookie
-from app.Router.Auth import google
-from app.Router.Youtube import youtube
-from app.Router.Account import prompt, scheduler, bgm
-from app.Router.Video import video
+from Router.Auth import google
+from Router.Youtube import youtube
+from Router.Account import prompt, scheduler, bgm
+from Router.Video import video
 from dotenv import load_dotenv
 
 load_dotenv()

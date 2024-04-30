@@ -3,8 +3,8 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
 from google.oauth2.credentials import Credentials
-from app.Model.Auth.Login import Login as loginModel
-from app.Model.Video.Video import Video as videoModel
+from Model.Auth.Login import Login as loginModel
+from Model.Video.Video import Video as videoModel
 
 
 class Youtube:

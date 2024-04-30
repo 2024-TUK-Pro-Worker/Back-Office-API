@@ -1,6 +1,6 @@
 from sqlalchemy import and_
-from app.Config.DataBase.database import engine, SessionLocal
-from app.Model import Models
+from Config.DataBase.database import engine, SessionLocal
+from Model import Models
 
 Models.Base.metadata.create_all(bind=engine)
 

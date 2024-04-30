@@ -2,7 +2,7 @@ import os
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from jose import jwt
-from app.Service.ThirdParty.Youtube import Youtube as YoutubeService
+from Service.ThirdParty.Youtube import Youtube as YoutubeService
 from pydantic import BaseModel
 
 youtube = APIRouter(prefix='/api/youtube')

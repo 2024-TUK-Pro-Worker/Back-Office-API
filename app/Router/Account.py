@@ -3,9 +3,9 @@ from jose import jwt
 from pydantic import BaseModel
 from fastapi import APIRouter, Request, UploadFile
 from fastapi.responses import JSONResponse
-from app.Service.Account.Prompt import getPrompt, updatePrompt
-from app.Service.Account.Bgm import getBgmList, uploadBgmFile, deleteBgmFile
-from app.Service.Account.Scheduler import getJobScheduleInfo, setJobScheduleInfo, getSchedulerStatus, createScheduler, \
+from Service.Account.Prompt import getPrompt, updatePrompt
+from Service.Account.Bgm import getBgmList, uploadBgmFile, deleteBgmFile
+from Service.Account.Scheduler import getJobScheduleInfo, setJobScheduleInfo, getSchedulerStatus, createScheduler, \
     deleteScheduler
 
 prompt = APIRouter(prefix='/api/account/prompt')
