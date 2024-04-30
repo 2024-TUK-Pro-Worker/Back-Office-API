@@ -8,7 +8,7 @@ docker/mysql/data/*
 !docker/web/docker-compose.yml
 !docker/web/Dockerfile
 
-.env
+app/.env
 
 app/Resource/Storage/*
 
