@@ -234,7 +234,7 @@ async def deleteBgmFile(params: RoutingModel.RQ_deleteBgmFile, authorization: Op
     try:
         allowExtention = {'mp3'}
 
-        if not ('.' in params.fileName and params.fileName.rsplit('.', 1)[1].lower() in allowExtention):
+        if not ('.' in params.fileName and params.fileName.split('.', 1)[1].lower() in allowExtention):
             raise Exception('not allow file extention')
 
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
