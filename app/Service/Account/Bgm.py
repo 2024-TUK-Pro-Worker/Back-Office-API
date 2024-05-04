@@ -5,46 +5,75 @@ def getBgmList(uuid: str):
     try:
         storagePath = f"./Resource/Storage/{uuid}/Bgm"
         if not os.path.isdir(storagePath):
-            raise '디렉토리 없음'
+            raise None
 
         return os.listdir(storagePath)
     except:
-        return []
+        return None
 
 
-def uploadBgmFile(uuid: str, bgmFileName, bgmFile):
+def uploadBgmFile(uuid: str, fileList: list):
+    global fileUploadResult
+
     try:
-        storagePath = f"./Resource/Storage/{uuid}/Bgm"
-        fileSavePath = f"{storagePath}/{bgmFileName}"
-        if not os.path.isdir(storagePath):
-            os.makedirs(storagePath)
+        fileUploadResult = {}
 
-        if os.path.isfile(f"{storagePath}/{bgmFileName}"):
-            raise '동일 파일명 파일 존재'
+        for fileData in fileList:
+            bgmFileName = fileData.filename
+            bgmFile = fileData.file.read()
 
-        with open(fileSavePath, "wb") as fp:
-            fp.write(bgmFile)
-            fp.close()
+            try:
+                storagePath = f"./Resource/Storage/{uuid}/Bgm"
+                fileSavePath = f"{storagePath}/{bgmFileName}"
+                if not os.path.isdir(storagePath):
+                    os.makedirs(storagePath)
 
-        if not os.path.isfile(f"{storagePath}/{bgmFileName}"):
-            raise '파일 저장 실패'
+                if os.path.isfile(f"{storagePath}/{bgmFileName}"):
+                    raise Exception('same file name file exist')
 
-        return True
+                with open(fileSavePath, "wb") as fp:
+                    fp.write(bgmFile)
+                    fp.close()
+
+                if not os.path.isfile(f"{storagePath}/{bgmFileName}"):
+                    raise Exception('file upload fail')
+
+                fileUploadResult[bgmFileName] = {
+                    'result': True
+                }
+            except Exception as e:
+                fileUploadResult[bgmFileName] = {
+                    'result': False,
+                    'message': e.__str__()
+                }
+
+        return {
+            'result': True,
+            'uploadList': fileUploadResult
+        }
     except:
-        return False
+        return {
+            'result': False,
+            'message': 'file upload fail'
+        }
 
 
 def deleteBgmFile(uuid: str, fileName: str):
     try:
         filePath = f"./Resource/Storage/{uuid}/Bgm/{fileName}"
         if not os.path.isfile(filePath):
-            raise '파일이 존재하지 않음'
+            raise Exception('file is not exist')
 
         os.remove(filePath)
 
         if os.path.isfile(filePath):
-            raise '파일 삭제 실패'
+            raise Exception('file delete fail')
 
-        return True
-    except:
-        return False
+        return {
+            'result': True
+        }
+    except Exception as e:
+        return {
+            'result': False,
+            'message': e
+        }

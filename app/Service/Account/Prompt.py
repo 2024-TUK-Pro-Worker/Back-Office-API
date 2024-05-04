@@ -5,11 +5,10 @@ def getPrompt(uuid: str):
     try:
         return promptModel().getPrompt(uuid)
     except:
-        return ''
+        return None
 
 def updatePrompt(uuid, content):
     try:
-        promptModel().updatePrompt(uuid, content)
-        return True
+        return promptModel().updatePrompt(uuid, content)
     except:
         return False

@@ -11,14 +11,14 @@ class Youtube:
     def __init__(self, jwtInfo):
         googleAuthInfo = loginModel().getAuthInfo(jwtInfo.get('uuid'))
 
-        creds = Credentials(token=googleAuthInfo[0],
-                            refresh_token=googleAuthInfo[1],
-                            id_token=googleAuthInfo[2],
+        creds = Credentials(token=googleAuthInfo['accessToken'],
+                            refresh_token=googleAuthInfo['refreshToken'],
+                            id_token=googleAuthInfo['idToken'],
                             token_uri='https://accounts.google.com/o/oauth2/token',
                             client_id=os.getenv('GOOGLE_CLIENT_ID'),
                             client_secret=os.getenv('GOOGLE_CLIENT_SECRET'),
-                            expiry=googleAuthInfo[3],
-                            scopes=googleAuthInfo[4])
+                            expiry=googleAuthInfo['expireAt'],
+                            scopes=googleAuthInfo['scope'])
 
         self.youtubeService = build('youtube', 'v3', credentials=creds)
 
@@ -49,31 +49,27 @@ class Youtube:
             response = insertRequest.execute()
 
             if 'id' not in response:
-                raise Exception('업로드 실패')
+                raise Exception('youtube upload fail')
 
-            videoModel().updateVideoDescription(uuid, videoId, response['id'])
-
-            return {
-                'result': True,
-                'uuid': uuid,
-                'videoId': videoId
-            }
+            if not videoModel().updateVideoDescription(uuid, videoId, response['id']):
+                raise Exception('youtube upload info update fail')
 
         except Exception as e:
-            print('동영상 삭제 중 오류 발생:', e)
-
             return {
                 'result': False,
                 'message': e
             }
         except HttpError as e:
-            print('동영상 업로드 중 오류 발생:', e)
-
             return {
                 'result': False,
                 'message': e
             }
-
+        finally:
+            return {
+                'result': True,
+                'uuid': uuid,
+                'videoId': videoId
+            }
 
     def delVideo(self, uuid, videoId):
         try:
@@ -87,27 +83,23 @@ class Youtube:
             response = deleteRequest.execute()
 
             if response != '':
-                raise Exception('동영상 삭제 실패.')
+                raise Exception('video delete fail')
 
-            videoModel().deleteVideo(uuid, videoId)
-
-            return {
-                'result': True,
-                'uuid': uuid,
-                'videoId': videoId
-            }
-
+            if not videoModel().deleteVideo(uuid, videoId):
+                raise Exception('video delete info update fail')
         except Exception as e:
-            print('동영상 삭제 중 오류 발생:', e)
-
             return {
                 'result': False,
                 'message': e
             }
         except HttpError as e:
-            print('동영상 삭제 중 오류 발생:', e)
-
             return {
                 'result': False,
                 'message': e
+            }
+        finally:
+            return {
+                'result': True,
+                'uuid': uuid,
+                'videoId': videoId
             }

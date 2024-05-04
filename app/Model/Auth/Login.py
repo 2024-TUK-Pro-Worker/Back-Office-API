@@ -1,54 +1,49 @@
-import pymysql
+from Model import Models
+from sqlalchemy import func
+from sqlalchemy.dialects.mysql import insert
+from Config.DataBase.database import engine, SessionLocal
+
+Models.Base.metadata.create_all(bind=engine)
 
 
 class Login:
     def __init__(self):
-        # DB와 접근하는 conn, cur 객체 생성
-        self.db = pymysql.connect(host="localhost", port=13306, user="root", password="root",
-                                  db='backoffice', charset="utf8")
-        self.cur = self.db.cursor()
+        self.db = SessionLocal()
 
     def getAuthInfo(self, uuid):
         try:
-            sql = "SELECT accessToken, refreshToken, idToken, expireAt, scope FROM login WHERE uuid = %s"
-            self.cur.execute(sql, (uuid,))
-            row = self.cur.fetchone()
+            data = self.db.query(Models.Login).filter(Models.Login.uuid == uuid).first()
+            data = data.__dict__
+            data.pop('_sa_instance_state', None)
         finally:
             self.db.close()
-
-        return row
+        return data
 
     def updateAuth(self, uuid, socialType, accessToken, refreshToken, idToken, expiresIn, scope, expireAt):
         try:
-            sql = ("""
-                   INSERT INTO login (uuid, socialType, accessToken, refreshToken, idToken, expiresIn, scope, expireAt, updatedAt) 
-                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
-                   ON DUPLICATE KEY UPDATE 
-                   accessToken = %s,
-                   idToken = %s,
-                   expiresIn = %s,
-                   scope = %s,
-                   expireAt = %s,
-                   updatedAt = CURRENT_TIMESTAMP
-                   """)
-
-            self.cur.execute(sql, (
-                uuid, socialType, accessToken, refreshToken, idToken, expiresIn, scope, expireAt,
-                accessToken, idToken, expiresIn, scope, expireAt
-            ))
-
-            self.db.commit()
-        except:
-            self.db.close()
-            return False
-        finally:
-            self.db.close()
-
-    def updateAccessToken(self, uuid, socialType, accessToken, expireAt):
-        try:
-            sql = "UPDATE login set accessToken = %s, expireAt = %s, updatedAt = CURRENT_TIMESTAMP where uuid = %s and socialType = %s"
-
-            self.cur.execute(sql, (accessToken, expireAt, uuid, socialType))
+            sql = (
+                insert(Models.Login)
+                .values({
+                    Models.Login.uuid: uuid,
+                    Models.Login.socialType: socialType,
+                    Models.Login.accessToken: accessToken,
+                    Models.Login.refreshToken: refreshToken,
+                    Models.Login.idToken: idToken,
+                    Models.Login.expiresIn: expiresIn,
+                    Models.Login.scope: scope,
+                    Models.Login.expireAt: expireAt,
+                    Models.Login.updatedAt: func.now()
+                })
+                .on_duplicate_key_update(
+                    accessToken=accessToken,
+                    idToken=idToken,
+                    expiresIn=expiresIn,
+                    scope=scope,
+                    expireAt=expireAt,
+                    updatedAt=func.now()
+                )
+            )
+            self.db.execute(sql)
 
             self.db.commit()
         except:
@@ -56,3 +51,4 @@ class Login:
             return False
         finally:
             self.db.close()
+        return True

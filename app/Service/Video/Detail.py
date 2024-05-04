@@ -8,25 +8,27 @@ def getList(uuid):
     try:
         return videoModel().getVideoList(uuid)
     except:
-        return []
+        return None
 
 
 def getDetail(uuid, videoId):
     try:
         return videoModel().getVideoInfo(uuid, videoId)
     except:
-        return []
+        return None
 
 
 def updateDetail(uuid, videoId, title, content, tags):
     tagToString = ','.join(tags)
-    videoModel().setVideoInfo(uuid, videoId, title, content, tagToString)
-    return True
+    return videoModel().setVideoInfo(uuid, videoId, title, content, tagToString)
 
 
 def insertIntoVideo(uuid, videoId, bgmFileName):
     try:
         videoInfo = videoModel().getVideoInfo(uuid, videoId)
+
+        if videoInfo is None:
+            raise Exception('video info is None')
 
         videoTmpPath = f"./Resource/Storage/{uuid}/Upload/tmp/{videoInfo['gptTitle']}.mp4"
         videoPath = f"./Resource/Storage/{uuid}/Upload/{videoInfo['gptTitle']}.mp4"
@@ -34,10 +36,10 @@ def insertIntoVideo(uuid, videoId, bgmFileName):
         bgmPath = f"./Resource/Storage/{uuid}/Bgm/tmp/{videoId}_{bgmFileName}"
 
         if not os.path.isfile(videoTmpPath):
-            raise '병합 대상 비디오가 없음'
+            raise Exception('merge target video is not found')
 
         if not os.path.isfile(originBgmPath):
-            raise '병합 대상 브금이 없음'
+            raise Exception('merge target bgm is not found')
 
         video = VideoFileClip(videoTmpPath)
         videoRange = int(video.duration) * 1000
@@ -63,14 +65,19 @@ def insertIntoVideo(uuid, videoId, bgmFileName):
         video.write_videofile(videoPath)
 
         if not os.path.isfile(videoPath):
-            raise '비디오 생성 오류'
+            raise Exception('video merging error')
 
         if os.path.isfile(videoTmpPath):
             os.remove(videoTmpPath)
 
         if os.path.isfile(bgmPath):
             os.remove(bgmPath)
-
-        return True
-    except:
-        return False
+    except Exception as e:
+        return {
+            'result': False,
+            'message': e
+        }
+    finally:
+        return {
+            'result': True
+        }

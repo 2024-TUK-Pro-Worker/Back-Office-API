@@ -11,13 +11,12 @@ def getJobScheduleInfo(uuid):
     try:
         return scheduleModel().getSchedule(uuid)
     except:
-        return {'uuid': uuid, 'cron_schedule': '*/20 * * * *'}
+        return None
 
 
 def setJobScheduleInfo(uuid, cron_schedule):
     try:
-        scheduleModel().setSchedule(uuid, cron_schedule)
-        return True
+        return scheduleModel().setSchedule(uuid, cron_schedule)
     except:
         return False
 
@@ -40,16 +39,25 @@ def createScheduler(uuid):
     try:
         scheduleInfo = getJobScheduleInfo(uuid)
 
+        if scheduleInfo is None:
+            raise 'jobschedule info call fail'
+
         return __createCronjob(uuid, scheduleInfo['cron_schedule'])
     except:
-        return False
+        return {
+            'result': False,
+            'message': 'scheduler create fail'
+        }
 
 
 def deleteScheduler(uuid):
     try:
         return __deleteCronjob(uuid)
     except:
-        return False
+        return {
+            'result': False,
+            'message': 'scheduler delete fail'
+        }
 
 
 def __createCronjob(uuid, schedule='*/20 * * * *'):
@@ -60,14 +68,12 @@ def __createCronjob(uuid, schedule='*/20 * * * *'):
 
     try:
         k8s_batch_client.read_namespaced_cron_job(uuid, os.getenv('K8S_NAMESPACE'))
-        alreadyCreated = True
-    except:
-        alreadyCreated = False
-
-    if alreadyCreated:
         k8s_batch_client.delete_namespaced_cron_job(uuid, os.getenv('K8S_NAMESPACE'))
-        # 동작하고 있는 스케줄러가 종료 될 때까지 대기
-        time.sleep(5)
+    except:
+        return {
+            'result': False,
+            'message': 'scheduler recreate fail'
+        }
 
     with open("Config/Kubernetes/BaseCronjob.yaml") as f:
         cronjob_yaml = yaml.safe_load(f)
@@ -93,9 +99,14 @@ def __createCronjob(uuid, schedule='*/20 * * * *'):
 
     try:
         k8s_batch_client.read_namespaced_cron_job(uuid, os.getenv('K8S_NAMESPACE'))
-        return True
+        return {
+            'result': True
+        }
     except:
-        return False
+        return {
+            'result': False,
+            'message': 'scheduler create fail'
+        }
 
 
 def __deleteCronjob(uuid):
@@ -105,15 +116,28 @@ def __deleteCronjob(uuid):
 
     try:
         k8s_batch_client.read_namespaced_cron_job(uuid, os.getenv('K8S_NAMESPACE'))
-        alreadyCreated = True
     except:
-        return True
+        return {
+            'result': False,
+            'message': 'already scheduler deleted'
+        }
 
-    if alreadyCreated:
+    try:
         k8s_batch_client.delete_namespaced_cron_job(uuid, os.getenv('K8S_NAMESPACE'))
+    except:
+        return {
+            'result': False,
+            'message': 'scheduler delete fail'
+        }
 
     try:
         k8s_batch_client.read_namespaced_cron_job(uuid, os.getenv('K8S_NAMESPACE'))
-        return False
+
+        return {
+            'result': False,
+            'message': 'scheduler delete fail'
+        }
     except:
-        return True
+        return {
+            'result': True
+        }

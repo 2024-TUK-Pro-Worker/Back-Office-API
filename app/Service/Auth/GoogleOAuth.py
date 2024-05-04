@@ -52,7 +52,7 @@ def authGoogle(code: str):
     if userInfo == None:
         userModel().insertUser('1', uuid, email, userName)
         promptModel().insertDefaultPrompt(uuid)
-    elif userInfo[3] != email and userInfo[4] != userName:
+    elif userInfo['email'] != email and userInfo['name'] != userName:
         userModel().updateUser('1', uuid, email, userName)
 
     userResourcePath = f"./Resource/Storage/{uuid}"
@@ -60,9 +60,12 @@ def authGoogle(code: str):
         os.makedirs(userResourcePath)
 
     if refreshToken == None:
-        refreshToken = loginModel().getAuthInfo(uuid)[1]
+        refreshToken = loginModel().getAuthInfo(uuid)['refreshToken']
 
-    loginModel().updateAuth(uuid, '1', accessToken, refreshToken, idToken, expiresIn, scope, expireAt)
+    loginResult = loginModel().updateAuth(uuid, '1', accessToken, refreshToken, idToken, expiresIn, scope, expireAt)
+
+    if not loginResult:
+        return False
 
     data = {
         "uuid": uuid,

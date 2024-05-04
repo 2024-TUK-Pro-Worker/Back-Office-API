@@ -10,9 +10,13 @@ class Video:
         self.db = SessionLocal()
 
     def getVideoList(self, uuid):
-        result = []
+        global result
+
         try:
+            result = []
+
             queryResult = self.db.query(Models.Video).filter(Models.Video.uuid == uuid).all()
+
             for row in queryResult:
                 tmp = row.__dict__
                 tmp.pop('_sa_instance_state', None)
@@ -21,12 +25,16 @@ class Video:
                 tmp['uploadAt'] = str(tmp['uploadAt']) if tmp['uploadAt'] is not None else tmp['uploadAt']
                 tmp['deletedAt'] = str(tmp['deletedAt']) if tmp['deletedAt'] is not None else tmp['deletedAt']
                 result.append(tmp)
+        except:
+            self.db.close()
+            return None
         finally:
             self.db.close()
-
-        return result
+            return result
 
     def getVideoInfo(self, uuid, videoId):
+        global data
+
         try:
             queryResult = self.db.query(Models.Video).filter(
                 and_(
@@ -41,14 +49,19 @@ class Video:
             data['createdAt'] = str(data['createdAt'])
             data['uploadAt'] = str(data['uploadAt']) if data['uploadAt'] is not None else data['uploadAt']
             data['deletedAt'] = str(data['deletedAt']) if data['deletedAt'] is not None else data['deletedAt']
+        except:
+            self.db.close()
+            return None
         finally:
             self.db.close()
-
-        return data
+            return data
 
     def getVideoId(self, uuid, videoId):
-        result = {}
+        global result
+
         try:
+            result = {}
+
             queryResult = self.db.query(Models.Video.id, Models.Video.uploadId).filter(
                 and_(Models.Video.id == videoId, Models.Video.uuid == uuid)).all()
 
@@ -56,19 +69,12 @@ class Video:
                 tmp = row.__dict__
                 tmp.pop('_sa_instance_state', None)
                 result = tmp
-        finally:
-            self.db.close()
-        return result
-
-    def insertVideoInfo(self, uuid, title):
-        try:
-            self.db.add(Models.Video(uuid=uuid, gptTitle=title))
-            self.db.commit()
         except:
             self.db.close()
-            return False
+            return None
         finally:
             self.db.close()
+            return result
 
     def updateVideoDescription(self, uuid, videoId, uploadId):
         try:
@@ -76,10 +82,12 @@ class Video:
                 {'uploadId': uploadId, 'uploadAt': 'CURRENT_TIMESTAMP'})
             self.db.commit()
         except:
+            self.db.rollback()
             self.db.close()
             return False
         finally:
             self.db.close()
+            return True
 
     def setVideoInfo(self, uuid, videoId, title, description, tags):
         try:
@@ -92,10 +100,12 @@ class Video:
                 })
             self.db.commit()
         except:
+            self.db.rollback()
             self.db.close()
             return False
         finally:
             self.db.close()
+            return True
 
     def deleteVideo(self, uuid, videoId):
         try:
@@ -106,7 +116,9 @@ class Video:
                 })
             self.db.commit()
         except:
+            self.db.rollback()
             self.db.close()
             return False
         finally:
             self.db.close()
+            return True
