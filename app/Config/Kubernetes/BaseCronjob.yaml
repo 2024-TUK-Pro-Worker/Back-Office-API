@@ -16,6 +16,8 @@ spec:
               volumeMounts:
                 - name: shared-data
                   mountPath: /home/app/AI-Shorts-Maker-Service/Resource/{UUID}
+                - name: google-config
+                  mountPath: /home/app/AI-Shorts-Maker-Service/Config/Google
               env:
                 - name: OPENAI_API_KEY
                   value: "{OPENAI_API_KEY}"
@@ -41,5 +43,9 @@ spec:
             - name: shared-data
               hostPath:
                 path: /home/fileDisk
+                type: Directory
+            - name: google-config
+              hostPath:
+                path: /home/aishortsmaker/Config/Google
                 type: Directory
           restartPolicy: OnFailure
