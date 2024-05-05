@@ -1,12 +1,13 @@
 import os
+import time
 import uvicorn
-from typing import Optional
-from fastapi import FastAPI, Cookie
-from Router.Auth.AuthRouter import google
-from Router.Youtube.YoutubeRouter import youtube
-from Router.Account.AccountRouter import prompt, scheduler, bgm
-from Router.Video.VideoRouter import video
 from dotenv import load_dotenv
+from typing import Optional
+from Router.Auth.AuthRouter import google
+from Router.Video.VideoRouter import video
+from Router.Youtube.YoutubeRouter import youtube
+from fastapi import FastAPI, Cookie, Request, responses
+from Router.Account.AccountRouter import prompt, scheduler, bgm
 
 load_dotenv()
 
@@ -19,6 +20,21 @@ app.include_router(prompt)
 app.include_router(scheduler)
 app.include_router(video)
 app.include_router(bgm)
+
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    if request.cookies.get('authorization') is None:
+        return responses.JSONResponse({
+            'result': 'fail',
+            'message': '403 Forbidden'
+        }, status_code=403)
+
+    start_time = time.time()
+    response = await call_next(request)
+    process_time = time.time() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
+    return response
 
 
 @app.get('/')
