@@ -1,5 +1,4 @@
 import os
-import json
 from jose import jwt
 from typing import Optional, Union
 from fastapi import APIRouter, Cookie, UploadFile

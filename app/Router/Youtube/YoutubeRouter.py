@@ -26,7 +26,7 @@ async def postUploadToYoutube(params: RoutingModel.RQ_postUploadToYoutube, autho
             'result': 'success',
             'data': {
                 'uuid': jwtData.get('uuid'),
-                'videoId': params.videoId
+                'videoId': params['videoId']
             }
         }
     except Exception as e:
@@ -53,7 +53,7 @@ async def deleteYoutubeVideo(params: RoutingModel.RQ_deleteYoutubeVideo, authori
             'result': 'success',
             'data': {
                 'uuid': jwtData.get('uuid'),
-                'videoId': params.videoId
+                'videoId': params['videoId']
             }
         }
     except Exception as e:
