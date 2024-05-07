@@ -24,7 +24,7 @@ app.include_router(bgm)
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
-    if request.cookies.get('authorization') is None:
+    if '/auth/' not in request.url.path and request.cookies.get('authorization') is None:
         return responses.JSONResponse({
             'result': 'fail',
             'message': '403 Forbidden'

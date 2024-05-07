@@ -1,4 +1,5 @@
 import os
+from typing import BinaryIO
 
 
 def getBgmList(uuid: str):
@@ -10,6 +11,48 @@ def getBgmList(uuid: str):
         return os.listdir(storagePath)
     except:
         return None
+
+
+def getPreviewInfo(uuid, bgmName, rangeHeader):
+    try:
+        bgmPath = f"./Resource/Storage/{uuid}/Bgm/{bgmName}.mp3"
+
+        if not os.path.isfile(bgmPath):
+            raise Exception('bgm file is not exist')
+
+        # file Size & start end point
+        fileSize = os.stat(bgmPath).st_size
+
+        try:
+            h = rangeHeader.replace("bytes=", "").split("-")
+            start = int(h[0]) if h[0] != "" else 0
+            end = int(h[1]) if h[1] != "" else fileSize - 1
+        except ValueError:
+            raise Exception(f'Invalid request range (Range:{rangeHeader!r})')
+
+        if start > end or start < 0 or end > fileSize - 1:
+            raise Exception(f'Invalid request range (Range:{rangeHeader!r})')
+
+        return {
+            'result': True,
+            'filePath': bgmPath,
+            'fileSize': fileSize,
+            'startPoint': start,
+            'endPoint': end
+        }
+    except Exception as e:
+        return {
+            'result': False,
+            'message': e
+        }
+
+
+def getPreviewVideo(fileObj: BinaryIO, start: int, end: int):
+    with fileObj as f:
+        f.seek(start)
+        while (pos := f.tell()) <= end:
+            readSize = end + 1 - pos
+            yield f.read(readSize)
 
 
 def uploadBgmFile(uuid: str, fileList: list):

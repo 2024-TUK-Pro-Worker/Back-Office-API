@@ -1,5 +1,6 @@
 import os
 from pydub import *
+from typing import BinaryIO
 from moviepy.editor import *
 from Model.Video.Video import Video as videoModel
 
@@ -16,6 +17,52 @@ def getDetail(uuid, videoId):
         return videoModel().getVideoInfo(uuid, videoId)
     except:
         return None
+
+
+def getPreviewInfo(uuid, videoId, rangeHeader):
+    try:
+        videoInfo = videoModel().getVideoInfo(uuid, videoId)
+
+        if videoInfo['uuid'] is not uuid:
+            raise Exception('Invalid Request')
+
+        videoPath = f"./Resource/Storage/{uuid}/Upload/tmp/{videoInfo['gptTitle']}.mp4"
+
+        if not os.path.isfile(videoPath):
+            raise Exception('tmp video is not exist')
+
+        # file Size & start end point
+        fileSize = os.stat(videoPath).st_size
+
+        try:
+            h = rangeHeader.replace("bytes=", "").split("-")
+            start = int(h[0]) if h[0] != "" else 0
+            end = int(h[1]) if h[1] != "" else fileSize - 1
+        except ValueError:
+            raise Exception(f'Invalid request range (Range:{rangeHeader!r})')
+
+        if start > end or start < 0 or end > fileSize - 1:
+            raise Exception(f'Invalid request range (Range:{rangeHeader!r})')
+
+        return {
+            'result': True,
+            'filePath': videoPath,
+            'fileSize': fileSize,
+            'startPoint': start,
+            'endPoint': end
+        }
+    except Exception as e:
+        return {
+            'result': False,
+            'message': e
+        }
+
+def getPreviewVideo(fileObj: BinaryIO, start: int, end: int, chunk: int = 1024*1792):
+    with fileObj as f:
+        f.seek(start)
+        while (pos := f.tell()) <= end:
+            readSize = min(chunk, end + 1 - pos)
+            yield f.read(readSize)
 
 
 def updateDetail(uuid, videoId, title, content, tags):

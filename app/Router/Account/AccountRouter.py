@@ -1,9 +1,9 @@
 import os
 from jose import jwt
 from typing import Optional, Union
-from fastapi import APIRouter, Cookie, UploadFile
 from Router import Model as DefaultRoutingModel
 from Router.Account import AccountModel as RoutingModel
+from fastapi import APIRouter, Cookie, UploadFile, responses, Request, status
 from Service.Account import Prompt as PromptService, Bgm as BgmService, Scheduler as SchedulerService
 
 prompt = APIRouter(prefix='/api/account/prompt')
@@ -200,6 +200,50 @@ async def getBgmList(authorization: Optional[str] = Cookie(None)):
                 'bgmList': result
             }
         }
+    except Exception as e:
+        return {
+            'result': 'fail',
+            'message': e.__str__()
+        }
+
+
+@bgm.get("/preview/{bgmName}", tags=['video'])
+async def video_endpoint(bgmName: str, request: Request, authorization: Optional[str] = Cookie(None)):
+    try:
+        jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
+
+        rangeHeader = request.headers.get("range")
+
+        result = BgmService.getPreviewInfo(jwtData.get('uuid'), bgmName, rangeHeader)
+
+        if result['result'] is False:
+            raise Exception(result['message'])
+
+        headers = {
+            'content-type': 'audio/mpeg',
+            'accept-ranges': 'bytes',
+            'content-encoding': 'identity',
+            'content-length': str(result['fileSize']),
+            'access-control-expose-headers': (
+                'content-type, accept-ranges, content-length, '
+                'content-range, content-encoding'
+            ),
+        }
+        if rangeHeader is None:
+            result['startPoint'] = 0
+            result['endPoint'] = result['fileSize'] - 1
+            status_code = status.HTTP_200_OK
+        else:
+            size = result['endPoint'] - result['startPoint'] + 1
+            headers["content-length"] = str(size)
+            headers["content-range"] = f"bytes {result['startPoint']}-{result['endPoint']}/{result['fileSize']}"
+            status_code = status.HTTP_206_PARTIAL_CONTENT
+
+        return responses.StreamingResponse(
+            BgmService.getPreviewVideo(open(result['filePath'], mode="rb"), result['startPoint'], result['endPoint']),
+            headers=headers,
+            status_code=status_code,
+        )
     except Exception as e:
         return {
             'result': 'fail',
