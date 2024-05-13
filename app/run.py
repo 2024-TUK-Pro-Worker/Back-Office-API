@@ -1,11 +1,12 @@
 import os
 import time
 import uvicorn
-from dotenv import load_dotenv
 from typing import Optional
+from dotenv import load_dotenv
 from Router.Auth.AuthRouter import google
 from Router.Video.VideoRouter import video
 from Router.Youtube.YoutubeRouter import youtube
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Cookie, Request, responses
 from Router.Account.AccountRouter import prompt, scheduler, bgm
 
@@ -21,6 +22,21 @@ app.include_router(scheduler)
 app.include_router(video)
 app.include_router(bgm)
 
+origins = [
+    "https://api-aishortmaker.lacy.co.kr",
+    "https://aishortsmaker.lacy.co.kr",
+    "http://localhost",
+    "http://localhost:3000",
+    "http://localhost:8081"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
