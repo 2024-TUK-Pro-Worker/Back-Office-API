@@ -23,9 +23,6 @@ def getPreviewInfo(uuid, videoId, rangeHeader):
     try:
         videoInfo = videoModel().getVideoInfo(uuid, videoId)
 
-        if videoInfo['uuid'] is not uuid:
-            raise Exception('Invalid Request')
-
         videoPath = f"./Resource/Storage/{uuid}/Upload/tmp/{videoInfo['gptTitle']}.mp4"
 
         if not os.path.isfile(videoPath):
