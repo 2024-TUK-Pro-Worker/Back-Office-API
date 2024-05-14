@@ -1,5 +1,5 @@
 import os
-from fastapi import APIRouter, status
+from fastapi import APIRouter
 from fastapi.responses import RedirectResponse
 from Service.Auth.GoogleOAuth import *
 
@@ -14,7 +14,7 @@ async def getUrl():
 @google.get('/callback', tags=['auth'], response_class=RedirectResponse)
 async def callback(code: str) -> RedirectResponse:
     jwtToken = authGoogle(code)
-    response = RedirectResponse(url=f"{os.getenv('FRONT_HOST')}/", status_code=status.HTTP_303_SEE_OTHER)
+    response = RedirectResponse(url=f"{os.getenv('FRONT_HOST')}/")
     response.set_cookie(key="authorization", value=jwtToken, domain=f"{os.getenv('FRONT_HOST')}/")
     response.set_cookie(key="authorization", value=jwtToken, domain=f"{os.getenv('API_HOST')}/")
     return response
