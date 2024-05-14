@@ -13,6 +13,6 @@ async def getUrl():
 @google.get('/callback', tags=['auth'])
 async def callback(code: str):
     jwtToken = authGoogle(code)
-    response = RedirectResponse(f"{os.getenv('FRONT_HOST')}/")
-    response.set_cookie(key="authorization", value=jwtToken)
+    response = RedirectResponse(f"{os.getenv('FRONT_HOST')}")
+    response.set_cookie(key="authorization", value=jwtToken, path="/", domain=f"{os.getenv('FRONT_HOST')}", secure=False, httponly=False)
     return response
