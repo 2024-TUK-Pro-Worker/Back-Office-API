@@ -29,7 +29,9 @@ def getPreviewInfo(uuid, videoId, rangeHeader):
         videoPath = f"./Resource/Storage/{uuid}/Upload/tmp/{videoInfo['gptTitle']}.mp4"
 
         if not os.path.isfile(videoPath):
-            raise Exception('tmp video is not exist')
+            videoPath = f"./Resource/Storage/{uuid}/Upload/{videoInfo['gptTitle']}.mp4"
+            if not os.path.isfile(videoPath):
+                raise Exception('video is not exist')
 
         # file Size & start end point
         fileSize = os.stat(videoPath).st_size
