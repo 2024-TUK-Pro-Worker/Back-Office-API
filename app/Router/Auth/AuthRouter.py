@@ -12,9 +12,9 @@ async def getUrl():
 
 
 @google.get('/callback', tags=['auth'], response_class=RedirectResponse)
-async def callback(code: str):
+async def callback(code: str) -> RedirectResponse:
     jwtToken = authGoogle(code)
     response = RedirectResponse(url=f"{os.getenv('FRONT_HOST')}/")
-    response.set_cookie(key="authorization", value=jwtToken, domain=f"{os.getenv('FRONT_HOST')}")
-    response.set_cookie(key="authorization", value=jwtToken, domain=f"{os.getenv('API_HOST')}")
+    response.set_cookie(key="authorization", value=jwtToken, domain=f"{os.getenv('FRONT_HOST')}/")
+    response.set_cookie(key="authorization", value=jwtToken, domain=f"{os.getenv('API_HOST')}/")
     return response
