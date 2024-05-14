@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter
 from Service.Auth.GoogleOAuth import *
 
@@ -12,6 +13,6 @@ async def getUrl():
 @google.get('/callback', tags=['auth'])
 async def callback(code: str):
     jwtToken = authGoogle(code)
-    response = RedirectResponse('/')
+    response = RedirectResponse(f"{os.getenv('FRONT_HOST')}/")
     response.set_cookie(key="authorization", value=jwtToken)
     return response
