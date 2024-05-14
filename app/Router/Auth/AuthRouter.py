@@ -14,6 +14,5 @@ async def getUrl():
 async def callback(code: str):
     jwtToken = authGoogle(code)
     response = RedirectResponse(f"https://{os.getenv('FRONT_HOST')}/")
-    response.set_cookie(key="authorization", value=jwtToken, path="/", domain=f"{os.getenv('API_HOST')}", secure=True, httponly=True, samesite="none")
-    response.set_cookie(key="authorization", value=jwtToken, path="/", domain=f"{os.getenv('FRONT_HOST')}", secure=True, httponly=True, samesite="none")
+    response.set_cookie(key="authorization", value=jwtToken, path="/", domain=f"{os.getenv('HOST')}")
     return response
