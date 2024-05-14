@@ -1,6 +1,5 @@
 import os
 from fastapi import APIRouter
-from fastapi.responses import RedirectResponse
 from Service.Auth.GoogleOAuth import *
 
 google = APIRouter(prefix='/auth/google')
