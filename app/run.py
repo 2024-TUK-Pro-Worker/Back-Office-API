@@ -46,6 +46,16 @@ async def add_process_time_header(request: Request, call_next):
             'message': '403 Forbidden'
         }, status_code=403)
 
+    referer = request.headers.get('referer')
+    refererDomain = referer.split('/')[2] if referer.split('/')[2] is not None else None
+    refererDomain = f"http://{refererDomain}" if 'localhost' in refererDomain else f"https://{refererDomain}"
+
+    if refererDomain not in origins:
+        return responses.JSONResponse({
+            'result': 'fail',
+            'message': '404 NotFound'
+        }, status_code=404)
+
     start_time = time.time()
     response = await call_next(request)
     process_time = time.time() - start_time
