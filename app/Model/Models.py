@@ -39,7 +39,7 @@ class Video(Base):
     content = Column(Text, nullable=True)
     tags = Column(Text, nullable=True)
     createdAt = Column(DateTime, index=True, nullable=False)
-    uploadAt = Column(DateTime, index=True, nullable=False)
+    uploadAt = Column(DateTime, index=True, nullable=True)
     isDeleted = Column(CHAR(1), index=True, nullable=False, default='N')
     deletedAt = Column(DateTime, nullable=True)
 
