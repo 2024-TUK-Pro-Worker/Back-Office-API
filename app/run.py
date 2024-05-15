@@ -65,10 +65,5 @@ async def add_process_time_header(request: Request, call_next):
     return response
 
 
-@app.get('/')
-def index(authorization: Optional[str] = Cookie(None)):
-    return {'JWT': authorization}
-
-
 if __name__ == "__main__":
     uvicorn.run("run:app", host='0.0.0.0', port=int(os.getenv('SERVER_PORT')), log_level="info", reload=True)
