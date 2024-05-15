@@ -1,7 +1,6 @@
 import os
 import time
 import uvicorn
-from typing import Optional
 from dotenv import load_dotenv
 from Router.Auth.AuthRouter import google
 from Router.Video.VideoRouter import video
