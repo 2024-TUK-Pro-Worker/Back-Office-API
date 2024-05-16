@@ -29,9 +29,9 @@ class Youtube:
             # 동영상 업로드 정보 설정
             requestBody = {
                 'snippet': {
-                    'title': videoDescription.title,
-                    'description': videoDescription.content,
-                    'tags': videoDescription.tags
+                    'title': videoDescription['title'],
+                    'description': videoDescription['content'],
+                    'tags': videoDescription['tags']
                 },
                 'status': {
                     'privacyStatus': 'public'
@@ -39,7 +39,7 @@ class Youtube:
             }
 
             # 동영상 업로드 요청 생성
-            media = MediaFileUpload(f'Resource/Storage/{uuid}/Upload/{videoDescription.gptTitle}.mp4')
+            media = MediaFileUpload(f'Resource/Storage/{uuid}/Upload/{videoDescription["gptTitle"]}.mp4')
             insertRequest = self.youtubeService.videos().insert(
                 part='snippet,status',
                 body=requestBody,
@@ -54,6 +54,11 @@ class Youtube:
             if not videoModel().updateVideoDescription(uuid, videoId, response['id']):
                 raise Exception('youtube upload info update fail')
 
+            return {
+                'result': True,
+                'uuid': uuid,
+                'videoId': videoId
+            }
         except Exception as e:
             return {
                 'result': False,
@@ -63,12 +68,6 @@ class Youtube:
             return {
                 'result': False,
                 'message': e
-            }
-        finally:
-            return {
-                'result': True,
-                'uuid': uuid,
-                'videoId': videoId
             }
 
     def delVideo(self, uuid, videoId):
@@ -87,6 +86,12 @@ class Youtube:
 
             if not videoModel().deleteVideo(uuid, videoId):
                 raise Exception('video delete info update fail')
+
+            return {
+                'result': True,
+                'uuid': uuid,
+                'videoId': videoId
+            }
         except Exception as e:
             return {
                 'result': False,
@@ -96,10 +101,4 @@ class Youtube:
             return {
                 'result': False,
                 'message': e
-            }
-        finally:
-            return {
-                'result': True,
-                'uuid': uuid,
-                'videoId': videoId
             }
