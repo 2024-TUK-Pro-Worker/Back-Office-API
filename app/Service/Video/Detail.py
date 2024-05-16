@@ -68,7 +68,7 @@ def getPreviewVideo(fileObj: BinaryIO, start: int, end: int, chunk: int = 1024*1
 
 
 def updateDetail(uuid, videoId, title, content, tags):
-    tagToString = ','.join(tags)
+    tagToString = ','.join(tags) if tags is not None else ''
     return videoModel().setVideoInfo(uuid, videoId, title, content, tagToString)
 
 

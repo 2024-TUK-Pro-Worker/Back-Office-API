@@ -34,19 +34,13 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
-    if '/auth/' not in request.url.path and request.cookies.get('authorization') is None:
-        return responses.JSONResponse({
-            'result': 'fail',
-            'message': '403 Forbidden'
-        }, status_code=403)
-
-    refererDomain = None
     referer = request.headers.get('referer')
+    refererDomain = None
     if referer is not None:
         refererDomain = referer.split('/')[2] if referer.split('/')[2] is not None else None
         refererDomain = f"http://{refererDomain}" if 'localhost' in refererDomain else f"https://{refererDomain}"
@@ -56,6 +50,12 @@ async def add_process_time_header(request: Request, call_next):
             'result': 'fail',
             'message': '404 NotFound'
         }, status_code=404)
+
+    if '/auth/' not in request.url.path and request.cookies.get('authorization') is None:
+        return responses.JSONResponse({
+            'result': 'fail',
+            'message': '403 Forbidden'
+        }, status_code=403)
 
     start_time = time.time()
     response = await call_next(request)
