@@ -51,7 +51,7 @@ async def add_process_time_header(request: Request, call_next):
             'message': '404 NotFound'
         }, status_code=404)
 
-    if '/auth/' not in request.url.path and request.cookies.get('authorization') is None:
+    if '/auth/' not in request.url.path and request.cookies.get('authorization') is None and request.method != 'OPTIONS':
         return responses.JSONResponse({
             'result': 'fail',
             'message': '403 Forbidden'
