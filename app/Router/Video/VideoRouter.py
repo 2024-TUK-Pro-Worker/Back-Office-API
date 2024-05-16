@@ -101,6 +101,8 @@ async def putVideoDetail(params: RoutingModel.RQ_setDetail, authorization: Optio
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
+        print(params)
+
         result = DetailService.updateDetail(
             jwtData.get('uuid'), params.videoId, params.title,
             params.content, params.tags

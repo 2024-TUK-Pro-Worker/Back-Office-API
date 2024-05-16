@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Text, INT, DateTime, CHAR, VARCHAR, text
-from sqlalchemy.sql import func
 from Config.DataBase.database import Base
 
 

@@ -1,6 +1,6 @@
-from sqlalchemy import and_
-from Config.DataBase.database import engine, SessionLocal
 from Model import Models
+from sqlalchemy import and_, func
+from Config.DataBase.database import engine, SessionLocal
 
 Models.Base.metadata.create_all(bind=engine)
 
@@ -79,7 +79,7 @@ class Video:
     def updateVideoDescription(self, uuid, videoId, uploadId):
         try:
             self.db.query(Models.Video).filter(and_(Models.Video.id == videoId, Models.Video.uuid == uuid)).update(
-                {'uploadId': uploadId, 'uploadAt': 'CURRENT_TIMESTAMP'})
+                {'uploadId': uploadId, 'uploadAt': func.now()})
             self.db.commit()
         except:
             self.db.rollback()
@@ -96,7 +96,7 @@ class Video:
                     'title': title,
                     'content': description,
                     'tags': tags,
-                    'uploadAt': 'CURRENT_TIMESTAMP'
+                    'uploadAt': func.now()
                 })
             self.db.commit()
         except:
@@ -112,7 +112,7 @@ class Video:
             self.db.query(Models.Video).filter(and_(Models.Video.id == videoId, Models.Video.uuid == uuid)).update(
                 {
                     'isDeleted': 'Y',
-                    'deletedAt': 'CURRENT_TIMESTAMP'
+                    'deletedAt': func.now()
                 })
             self.db.commit()
         except:
