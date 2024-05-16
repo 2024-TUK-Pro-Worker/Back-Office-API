@@ -73,10 +73,9 @@ class Youtube:
     def delVideo(self, uuid, videoId):
         try:
             videoIds = videoModel().getVideoId(uuid, videoId)
-            uploadId = videoIds[1]
 
             deleteRequest = self.youtubeService.videos().delete(
-                id=uploadId
+                id=videoIds['uploadId']
             )
 
             response = deleteRequest.execute()
