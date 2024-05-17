@@ -16,11 +16,11 @@ class User:
             data = data.__dict__
             data.pop('_sa_instance_state', None)
 
-            self.db.close()
             return data
         except:
-            self.db.close()
             return None
+        finally:
+            self.db.close()
 
     def insertUser(self, socialType, uuid, email, name):
         try:
@@ -42,11 +42,11 @@ class User:
             self.db.execute(sql)
 
             self.db.commit()
-            self.db.close()
             return True
         except:
-            self.db.close()
             return False
+        finally:
+            self.db.close()
 
     def updateUser(self, socialType, uuid, email, name):
         try:
@@ -56,8 +56,8 @@ class User:
                 'updatedAt': func.now()
             })
             self.db.commit()
-            self.db.close()
             return True
         except:
-            self.db.close()
             return False
+        finally:
+            self.db.close()

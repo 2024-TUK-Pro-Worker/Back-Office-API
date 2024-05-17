@@ -11,6 +11,9 @@ class Youtube:
     def __init__(self, jwtInfo):
         googleAuthInfo = loginModel().getAuthInfo(jwtInfo.get('uuid'))
 
+        if googleAuthInfo is None:
+            raise Exception('OAuth Info Is None')
+
         creds = Credentials(token=googleAuthInfo['accessToken'],
                             refresh_token=googleAuthInfo['refreshToken'],
                             id_token=googleAuthInfo['idToken'],

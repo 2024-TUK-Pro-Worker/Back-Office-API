@@ -15,11 +15,11 @@ class Login:
             data = self.db.query(Models.Login).filter(Models.Login.uuid == uuid).first()
             data = data.__dict__
             data.pop('_sa_instance_state', None)
-            self.db.close()
             return data
         except:
-            self.db.close()
             return None
+        finally:
+            self.db.close()
 
     def updateAuth(self, uuid, socialType, accessToken, refreshToken, idToken, expiresIn, scope, expireAt):
         try:
@@ -48,8 +48,8 @@ class Login:
             self.db.execute(sql)
 
             self.db.commit()
-            self.db.close()
             return True
         except:
-            self.db.close()
             return False
+        finally:
+            self.db.close()

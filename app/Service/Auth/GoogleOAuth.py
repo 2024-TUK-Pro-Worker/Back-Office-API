@@ -60,7 +60,15 @@ def authGoogle(code: str):
         os.makedirs(userResourcePath)
 
     if refreshToken == None:
-        refreshToken = loginModel().getAuthInfo(uuid)['refreshToken']
+        refreshToken = loginModel().getAuthInfo(uuid)
+
+        if refreshToken is None:
+            return {
+                'result': False,
+                'message': 'OAuth Info Is None'
+            }
+
+        refreshToken = refreshToken['refreshToken']
 
     loginResult = loginModel().updateAuth(uuid, '1', accessToken, refreshToken, idToken, expiresIn, scope, expireAt)
 

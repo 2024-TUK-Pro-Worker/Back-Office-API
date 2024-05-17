@@ -15,11 +15,11 @@ class Schedule:
             data = self.db.query(Models.Schedule).filter(Models.Schedule.uuid == uuid).first()
             data = data.__dict__
             data.pop('_sa_instance_state', None)
-            self.db.close()
             return data
         except:
-            self.db.close()
             return {'uuid': uuid, 'cron_schedule': '*/20 * * * *'}
+        finally:
+            self.db.close()
 
     def setSchedule(self, uuid, cron_schedule):
         try:
@@ -29,9 +29,9 @@ class Schedule:
             else :
                 self.db.query(Models.Schedule).filter(Models.Schedule.uuid == uuid).update({'cron_schedule': cron_schedule})
             self.db.commit()
-            self.db.close()
             return True
         except:
             self.db.rollback()
-            self.db.close()
             return False
+        finally:
+            self.db.close()
