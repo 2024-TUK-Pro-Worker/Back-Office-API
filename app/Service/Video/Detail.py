@@ -127,12 +127,12 @@ def insertIntoVideo(uuid, videoId, bgmFileName):
 
         if os.path.isfile(bgmPath):
             os.remove(bgmPath)
+
+        return {
+            'result': True
+        }
     except Exception as e:
         return {
             'result': False,
             'message': e
-        }
-    finally:
-        return {
-            'result': True
         }

@@ -25,12 +25,11 @@ class Video:
                 tmp['uploadAt'] = str(tmp['uploadAt']) if tmp['uploadAt'] is not None else tmp['uploadAt']
                 tmp['deletedAt'] = str(tmp['deletedAt']) if tmp['deletedAt'] is not None else tmp['deletedAt']
                 result.append(tmp)
+            self.db.close()
+            return result
         except:
             self.db.close()
             return None
-        finally:
-            self.db.close()
-            return result
 
     def getVideoInfo(self, uuid, videoId):
         global data
@@ -49,12 +48,12 @@ class Video:
             data['createdAt'] = str(data['createdAt'])
             data['uploadAt'] = str(data['uploadAt']) if data['uploadAt'] is not None else data['uploadAt']
             data['deletedAt'] = str(data['deletedAt']) if data['deletedAt'] is not None else data['deletedAt']
+
+            self.db.close()
+            return data
         except:
             self.db.close()
             return None
-        finally:
-            self.db.close()
-            return data
 
     def getVideoId(self, uuid, videoId):
         global result
@@ -69,25 +68,25 @@ class Video:
                 tmp = row.__dict__
                 tmp.pop('_sa_instance_state', None)
                 result = tmp
+
+            self.db.close()
+            return result
         except:
             self.db.close()
             return None
-        finally:
-            self.db.close()
-            return result
 
     def updateVideoDescription(self, uuid, videoId, uploadId):
         try:
             self.db.query(Models.Video).filter(and_(Models.Video.id == videoId, Models.Video.uuid == uuid)).update(
                 {'uploadId': uploadId, 'uploadAt': func.now()})
             self.db.commit()
+
+            self.db.close()
+            return True
         except:
             self.db.rollback()
             self.db.close()
             return False
-        finally:
-            self.db.close()
-            return True
 
     def setVideoInfo(self, uuid, videoId, title, description, tags):
         try:
@@ -99,13 +98,13 @@ class Video:
                     'uploadAt': func.now()
                 })
             self.db.commit()
+
+            self.db.close()
+            return True
         except:
             self.db.rollback()
             self.db.close()
             return False
-        finally:
-            self.db.close()
-            return True
 
     def deleteVideo(self, uuid, videoId):
         try:
@@ -115,10 +114,9 @@ class Video:
                     'deletedAt': func.now()
                 })
             self.db.commit()
+            self.db.close()
+            return True
         except:
             self.db.rollback()
             self.db.close()
             return False
-        finally:
-            self.db.close()
-            return True
