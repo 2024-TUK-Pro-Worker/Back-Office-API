@@ -46,10 +46,7 @@ async def add_process_time_header(request: Request, call_next):
         refererDomain = f"http://{refererDomain}" if 'localhost' in refererDomain else f"https://{refererDomain}"
 
     if refererDomain is None or refererDomain not in origins:
-        return responses.JSONResponse({
-            'result': 'fail',
-            'message': '404 NotFound'
-        }, status_code=404)
+        return responses.RedirectResponse(f"https://{os.getenv('FRONT_HOST')}/404")
 
     if '/auth/' not in request.url.path and request.cookies.get('authorization') is None and request.method != 'OPTIONS':
         return responses.JSONResponse({
