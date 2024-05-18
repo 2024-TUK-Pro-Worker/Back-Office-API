@@ -7,7 +7,19 @@ from Model.Video.Video import Video as videoModel
 
 def getList(uuid):
     try:
-        return videoModel().getVideoList(uuid)
+        videoList = videoModel().getVideoList(uuid)
+
+        if videoList is None:
+            raise Exception('video data is None')
+
+        for videoInfo in videoList:
+            appendBgm = __getAppendBgmStatus(uuid, videoInfo['gptTitle'])
+            if appendBgm['result'] is False:
+                videoInfo['appendBgm'] = 'error'
+            else:
+                videoInfo['appendBgm'] = appendBgm['appendBgm']
+
+        return videoList
     except:
         return None
 
@@ -17,6 +29,29 @@ def getDetail(uuid, videoId):
         return videoModel().getVideoInfo(uuid, videoId)
     except:
         return None
+
+
+def __getAppendBgmStatus(uuid, videoName):
+    try:
+        videoPath = f"./Resource/Storage/{uuid}/Upload/{videoName}.mp4"
+        videoTmpPath = f"./Resource/Storage/{uuid}/Upload/tmp/{videoName}.mp4"
+
+        if os.path.isfile(videoTmpPath):
+            appendBgm = False
+        elif os.path.isfile(videoPath):
+            appendBgm = True
+        else:
+            raise Exception('file is not found')
+
+        return {
+            'result': True,
+            'appendBgm': appendBgm
+        }
+    except Exception as e:
+        return {
+            'result': False,
+            'message': e
+        }
 
 
 def getPreviewInfo(uuid, videoId, rangeHeader):
@@ -59,7 +94,8 @@ def getPreviewInfo(uuid, videoId, rangeHeader):
             'message': e
         }
 
-def getPreviewVideo(fileObj: BinaryIO, start: int, end: int, chunk: int = 1024*1792):
+
+def getPreviewVideo(fileObj: BinaryIO, start: int, end: int, chunk: int = 1024 * 1792):
     with fileObj as f:
         f.seek(start)
         while (pos := f.tell()) <= end:
