@@ -62,15 +62,17 @@ class Video:
         try:
             result = {}
 
-            queryResult = self.db.query(Models.Video.id, Models.Video.uploadId).filter(
-                and_(Models.Video.id == videoId, Models.Video.uuid == uuid)).all()
+            queryResult = self.db.query(Models.Video).filter(
+                and_(
+                    Models.Video.id == videoId,
+                    Models.Video.uuid == uuid
+                )
+            ).first()
 
-            for row in queryResult:
-                tmp = row.__dict__
-                tmp.pop('_sa_instance_state', None)
-                result = tmp
+            data = queryResult.__dict__
+            data.pop('_sa_instance_state', None)
 
-            return result
+            return data
         except:
             return None
         finally:
