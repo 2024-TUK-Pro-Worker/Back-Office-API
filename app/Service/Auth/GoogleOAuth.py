@@ -56,8 +56,33 @@ def authGoogle(code: str):
         userModel().updateUser('1', uuid, email, userName)
 
     userResourcePath = f"./Resource/Storage/{uuid}"
+    scenarioDir = f"{userResourcePath}/Scenario"
+    audioDir = f"{userResourcePath}/Audio"
+    bgmDir = f"{userResourcePath}/Bgm"
+    bgmTmpDir = f"{userResourcePath}/Bgm/tmp"
+    imageDir = f"{userResourcePath}/Image"
+    videoDir = f"{userResourcePath}/Video"
+    uploadDir = f"{userResourcePath}/Upload"
+    uploadTmpDir = f"{userResourcePath}/Upload/tmp"
+
     if not os.path.isdir(userResourcePath):
         os.makedirs(userResourcePath)
+    if not os.path.isdir(scenarioDir):
+        os.makedirs(scenarioDir)
+    if not os.path.isdir(audioDir):
+        os.makedirs(audioDir)
+    if not os.path.isdir(bgmDir):
+        os.makedirs(bgmDir)
+    if not os.path.isdir(bgmTmpDir):
+        os.makedirs(bgmTmpDir)
+    if not os.path.isdir(imageDir):
+        os.makedirs(imageDir)
+    if not os.path.isdir(uploadDir):
+        os.makedirs(uploadDir)
+    if not os.path.isdir(videoDir):
+        os.makedirs(videoDir)
+    if not os.path.isdir(uploadTmpDir):
+        os.makedirs(uploadTmpDir)
 
     if refreshToken == None:
         refreshToken = loginModel().getAuthInfo(uuid)
