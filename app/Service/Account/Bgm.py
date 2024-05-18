@@ -8,7 +8,10 @@ def getBgmList(uuid: str):
         if not os.path.isdir(storagePath):
             raise None
 
-        return os.listdir(storagePath)
+        bgmFileList = os.listdir(storagePath)
+        bgmFileList.remove('tmp')
+
+        return bgmFileList
     except:
         return None
 
