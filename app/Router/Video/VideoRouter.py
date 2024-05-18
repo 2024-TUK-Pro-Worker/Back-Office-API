@@ -3,7 +3,7 @@ from jose import jwt
 from typing import Optional, Union
 from Router import Model as DefaultRoutingModel
 from Service.Video import Detail as DetailService
-from Router.Video import VideoModel as RoutingModel
+from Router.Video import VideoDto as RoutingModel
 from fastapi import APIRouter, Cookie, responses, Request, status
 
 video = APIRouter(prefix='/api/video')

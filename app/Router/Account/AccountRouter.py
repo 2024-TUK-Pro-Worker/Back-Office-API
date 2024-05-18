@@ -2,7 +2,7 @@ import os
 from jose import jwt
 from typing import Optional, Union
 from Router import Model as DefaultRoutingModel
-from Router.Account import AccountModel as RoutingModel
+from Router.Account import AccountDto as RoutingModel
 from fastapi import APIRouter, Cookie, UploadFile, responses, Request, status
 from Service.Account import Prompt as PromptService, Bgm as BgmService, Scheduler as SchedulerService
 

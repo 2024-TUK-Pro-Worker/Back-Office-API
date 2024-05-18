@@ -4,7 +4,7 @@ from typing import Union, Optional
 from fastapi import APIRouter, Cookie
 from Service.ThirdParty.Youtube import Youtube as YoutubeService
 from Router import Model as DefaultRoutingModel
-from Router.Youtube import YoutubeModel as RoutingModel
+from Router.Youtube import YoutubeDto as RoutingModel
 
 youtube = APIRouter(prefix='/api/youtube')
 
