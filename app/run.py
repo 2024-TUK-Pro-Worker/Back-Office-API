@@ -39,15 +39,6 @@ app.add_middleware(
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
-    referer = request.headers.get('referer')
-    refererDomain = None
-    if referer is not None:
-        refererDomain = referer.split('/')[2] if referer.split('/')[2] is not None else None
-        refererDomain = f"http://{refererDomain}" if 'localhost' in refererDomain else f"https://{refererDomain}"
-
-    if refererDomain is None or refererDomain not in origins:
-        return responses.RedirectResponse(f"https://{os.getenv('FRONT_HOST')}/404")
-
     if '/auth/' not in request.url.path and request.cookies.get('authorization') is None and request.method != 'OPTIONS':
         return responses.JSONResponse({
             'result': 'fail',
