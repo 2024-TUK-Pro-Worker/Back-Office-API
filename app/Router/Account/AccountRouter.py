@@ -12,7 +12,7 @@ bgm = APIRouter(prefix='/api/account/bgm')
 
 
 # 프롬프트
-@prompt.get('/', tags=['prompt'], response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
+@prompt.get('', tags=['prompt'], response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
 async def getPromptInfo(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
@@ -184,7 +184,7 @@ async def deleteScheduler(authorization: Optional[str] = Cookie(None)):
         }
 
 
-@bgm.get('/', tags=['bgm'], response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
+@bgm.get('', tags=['bgm'], response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
 async def getBgmList(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
