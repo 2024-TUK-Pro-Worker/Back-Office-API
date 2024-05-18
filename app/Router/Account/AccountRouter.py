@@ -144,7 +144,7 @@ async def postSchedulerCreate(authorization: Optional[str] = Cookie(None)):
 
         result = SchedulerService.createScheduler(jwtData.get('uuid'))
 
-        if not result:
+        if not result or result['result'] is False:
             raise Exception('schedule create fail')
 
         return {

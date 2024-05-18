@@ -17,17 +17,17 @@ class Schedule:
             data.pop('_sa_instance_state', None)
             return data
         except:
-            return {'uuid': uuid, 'cron_schedule': '*/20 * * * *'}
+            return {'uuid': uuid, 'cronSchedule': '*/20 * * * *'}
         finally:
             self.db.close()
 
-    def setSchedule(self, uuid, cron_schedule):
+    def setSchedule(self, uuid, cronSchedule):
         try:
             data = self.db.query(Models.Schedule).filter(Models.Schedule.uuid == uuid).first()
             if data.__str__() == 'None':
-                self.db.add(Models.Schedule(uuid=uuid, cron_schedule=cron_schedule))
+                self.db.add(Models.Schedule(uuid=uuid, cronSchedule=cronSchedule))
             else :
-                self.db.query(Models.Schedule).filter(Models.Schedule.uuid == uuid).update({'cron_schedule': cron_schedule})
+                self.db.query(Models.Schedule).filter(Models.Schedule.uuid == uuid).update({'cronSchedule': cronSchedule})
             self.db.commit()
             return True
         except:

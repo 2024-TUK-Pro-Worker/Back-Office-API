@@ -54,4 +54,4 @@ class Schedule(Base):
     __tablename__ = "schedule"
 
     uuid = Column(VARCHAR(255), primary_key=True, index=True, nullable=False)
-    cron_schedule = Column(VARCHAR(255), nullable=True)
+    cronSchedule = Column(VARCHAR(255), nullable=True)

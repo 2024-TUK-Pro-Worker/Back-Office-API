@@ -14,9 +14,9 @@ def getJobScheduleInfo(uuid):
         return None
 
 
-def setJobScheduleInfo(uuid, cron_schedule):
+def setJobScheduleInfo(uuid, cronSchedule):
     try:
-        return scheduleModel().setSchedule(uuid, cron_schedule)
+        return scheduleModel().setSchedule(uuid, cronSchedule)
     except:
         return False
 
@@ -42,7 +42,7 @@ def createScheduler(uuid):
         if scheduleInfo is None:
             raise 'jobschedule info call fail'
 
-        return __createCronjob(uuid, scheduleInfo['cron_schedule'])
+        return __createCronjob(uuid, scheduleInfo['cronSchedule'])
     except:
         return {
             'result': False,
@@ -69,11 +69,13 @@ def __createCronjob(uuid, schedule='*/20 * * * *'):
     try:
         k8s_batch_client.read_namespaced_cron_job(uuid, os.getenv('K8S_NAMESPACE'))
         k8s_batch_client.delete_namespaced_cron_job(uuid, os.getenv('K8S_NAMESPACE'))
-    except:
-        return {
-            'result': False,
-            'message': 'scheduler recreate fail'
-        }
+    except Exception as e:
+        exceptReson = e.__dict__
+        if exceptReson['status'] != 404:
+            return {
+                'result': False,
+                'message': 'scheduler recreate fail'
+            }
 
     with open("Config/Kubernetes/BaseCronjob.yaml") as f:
         cronjob_yaml = yaml.safe_load(f)
