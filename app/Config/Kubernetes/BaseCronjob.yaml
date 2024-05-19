@@ -15,7 +15,7 @@ spec:
               imagePullPolicy: Always
               volumeMounts:
                 - name: shared-data
-                  mountPath: /home/app/AI-Shorts-Maker-Service/Resource
+                  mountPath: /home/app/AI-Shorts-Maker-Service/Resource/{UUID}
                 - name: google-config
                   mountPath: /home/app/AI-Shorts-Maker-Service/Config/Google
               env:
