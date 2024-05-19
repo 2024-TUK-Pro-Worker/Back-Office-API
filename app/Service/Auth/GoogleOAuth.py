@@ -68,25 +68,25 @@ def authGoogle(code: str):
     uploadTmpDir = f"{userResourcePath}/Upload/tmp"
 
     if not os.path.isdir(userResourcePath):
-        os.makedirs(userResourcePath)
+        os.makedirs(userResourcePath, mode=0o777)
     if not os.path.isdir(promptResourcePath):
-        os.makedirs(promptResourcePath)
+        os.makedirs(promptResourcePath, mode=0o777)
     if not os.path.isdir(scenarioDir):
-        os.makedirs(scenarioDir)
+        os.makedirs(scenarioDir, mode=0o777)
     if not os.path.isdir(audioDir):
-        os.makedirs(audioDir)
+        os.makedirs(audioDir, mode=0o777)
     if not os.path.isdir(bgmDir):
-        os.makedirs(bgmDir)
+        os.makedirs(bgmDir, mode=0o777)
     if not os.path.isdir(bgmTmpDir):
-        os.makedirs(bgmTmpDir)
+        os.makedirs(bgmTmpDir, mode=0o777)
     if not os.path.isdir(imageDir):
-        os.makedirs(imageDir)
+        os.makedirs(imageDir, mode=0o777)
     if not os.path.isdir(uploadDir):
-        os.makedirs(uploadDir)
+        os.makedirs(uploadDir, mode=0o777)
     if not os.path.isdir(videoDir):
-        os.makedirs(videoDir)
+        os.makedirs(videoDir, mode=0o777)
     if not os.path.isdir(uploadTmpDir):
-        os.makedirs(uploadTmpDir)
+        os.makedirs(uploadTmpDir, mode=0o777)
     if (not os.path.isfile(f'{promptResourcePath}/GPTPrompt.txt') or
             not os.path.isfile(f'{promptResourcePath}/CustomGPTPrompt.txt')):
         shutil.copytree('./Resource/Prompt', promptResourcePath, dirs_exist_ok=True)

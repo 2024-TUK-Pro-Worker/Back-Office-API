@@ -72,7 +72,7 @@ def uploadBgmFile(uuid: str, fileList: list):
                 storagePath = f"./Resource/Storage/{uuid}/Bgm"
                 fileSavePath = f"{storagePath}/{bgmFileName}"
                 if not os.path.isdir(storagePath):
-                    os.makedirs(storagePath)
+                    os.makedirs(storagePath, mode=0o777)
 
                 if os.path.isfile(f"{storagePath}/{bgmFileName}"):
                     raise Exception('same file name file exist')
