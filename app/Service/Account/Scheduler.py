@@ -89,6 +89,9 @@ def __createCronjob(uuid, schedule='*/20 * * * *'):
     cronjob_yaml['spec']['jobTemplate']['spec']['template']['spec']['containers'][0]['volumeMounts'][0]['mountPath'] = \
         cronjob_yaml['spec']['jobTemplate']['spec']['template']['spec']['containers'][0]['volumeMounts'][0][
             'mountPath'].replace('{UUID}', uuid)
+    cronjob_yaml['spec']['jobTemplate']['spec']['template']['spec']['volumes'][0]['hostPath'][0]['path'] = \
+        cronjob_yaml['spec']['jobTemplate']['spec']['template']['spec']['volumes'][0]['hostPath'][0]['path'].replace(
+            '{UUID}', uuid)
     for env in cronjob_yaml['spec']['jobTemplate']['spec']['template']['spec']['containers'][0]['env']:
         if env['name'] == 'UUID':
             env['value'] = uuid
