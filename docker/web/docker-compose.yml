@@ -2,6 +2,7 @@ version: "3.7"
 
 services:
   backoffice-api:
+    container_name: aishortsmaker-backoffice-api
     build:
       context: .
       dockerfile: Dockerfile
