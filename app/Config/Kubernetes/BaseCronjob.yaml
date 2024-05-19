@@ -42,10 +42,10 @@ spec:
           volumes:
             - name: shared-data
               hostPath:
-                path: /home/fileDisk
+                path: /home/shareDisk/fileDisk/{UUID}
                 type: Directory
             - name: google-config
               hostPath:
-                path: /home/aishortsmaker/Config/Google
+                path: /home/shareDisk/Config/Google
                 type: Directory
           restartPolicy: OnFailure
