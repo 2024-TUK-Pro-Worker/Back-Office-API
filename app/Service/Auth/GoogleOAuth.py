@@ -1,4 +1,5 @@
 import os
+import shutil
 import requests
 from jose import jwt
 from datetime import *
@@ -56,6 +57,7 @@ def authGoogle(code: str):
         userModel().updateUser('1', uuid, email, userName)
 
     userResourcePath = f"./Resource/Storage/{uuid}"
+    promptResourcePath = f"./Resource/Storage/{uuid}/Prompt"
     scenarioDir = f"{userResourcePath}/Scenario"
     audioDir = f"{userResourcePath}/Audio"
     bgmDir = f"{userResourcePath}/Bgm"
@@ -67,6 +69,8 @@ def authGoogle(code: str):
 
     if not os.path.isdir(userResourcePath):
         os.makedirs(userResourcePath)
+    if not os.path.isdir(promptResourcePath):
+        os.makedirs(promptResourcePath)
     if not os.path.isdir(scenarioDir):
         os.makedirs(scenarioDir)
     if not os.path.isdir(audioDir):
@@ -83,6 +87,9 @@ def authGoogle(code: str):
         os.makedirs(videoDir)
     if not os.path.isdir(uploadTmpDir):
         os.makedirs(uploadTmpDir)
+    if (not os.path.isfile(f'{promptResourcePath}/GPTPrompt.txt') or
+            not os.path.isfile(f'{promptResourcePath}/CustomGPTPrompt.txt')):
+        shutil.copytree('./Resource/Prompt', promptResourcePath, dirs_exist_ok=True)
 
     if refreshToken == None:
         refreshToken = loginModel().getAuthInfo(uuid)
