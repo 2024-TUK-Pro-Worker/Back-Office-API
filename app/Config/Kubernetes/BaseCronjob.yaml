@@ -8,6 +8,7 @@ spec:
     spec:
       template:
         spec:
+          successfulJobsHistoryLimit: 0
           ttlSecondsAfterFinished: 0
           containers:
             - name: core-system
