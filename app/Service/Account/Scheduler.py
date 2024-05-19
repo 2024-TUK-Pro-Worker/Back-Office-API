@@ -97,7 +97,7 @@ def __createCronjob(uuid, schedule='*/20 * * * *'):
         if env['name'] == 'UUID':
             env['value'] = uuid
         elif env['name'] == 'RESOURCE_PATH':
-            env['value'] = './Resource'
+            env['value'] = f'./Resource/{uuid}'
         else:
             env['value'] = os.getenv(env['name'])
 
