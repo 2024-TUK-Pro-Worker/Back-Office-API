@@ -42,7 +42,7 @@ spec:
           volumes:
             - name: shared-data
               hostPath:
-                path: /home/fileDisk
+                path: /home/fileDisk/{UUID}
                 type: Directory
             - name: google-config
               hostPath:
