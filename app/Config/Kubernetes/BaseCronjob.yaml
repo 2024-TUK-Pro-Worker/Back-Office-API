@@ -16,7 +16,7 @@ spec:
               volumeMounts:
                 - name: shared-data
                   mountPath: /home/app/AI-Shorts-Maker-Service/Resource/{UUID}
-                - name: google-config
+                - name: config
                   mountPath: /home/app/AI-Shorts-Maker-Service/Config
               env:
                 - name: OPENAI_API_KEY
