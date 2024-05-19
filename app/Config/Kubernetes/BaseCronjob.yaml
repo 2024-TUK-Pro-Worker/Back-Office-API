@@ -37,9 +37,6 @@ spec:
                   value: "{DB_NAME}"
                 - name: DB_CHARSET
                   value: "{DB_CHARSET}"
-              command:
-                - python3
-                - main.py
           imagePullSecrets:
             - name: dockerhub-secret
           volumes:
