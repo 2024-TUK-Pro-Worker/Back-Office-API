@@ -97,8 +97,7 @@ class Video:
                 {
                     'title': title,
                     'content': description,
-                    'tags': tags,
-                    'uploadAt': func.now()
+                    'tags': tags
                 })
             self.db.commit()
 
