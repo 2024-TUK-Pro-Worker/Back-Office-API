@@ -23,6 +23,7 @@ class User(Base):
     socialType = Column(INT, index=True, nullable=False)
     email = Column(VARCHAR(255), index=True, nullable=False)
     name = Column(VARCHAR(255), nullable=False)
+    trial = Column(CHAR(1), nullable=False, default='Y')
     createdAt = Column(DateTime, nullable=False, server_default=text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
     updatedAt = Column(DateTime, nullable=True)
 

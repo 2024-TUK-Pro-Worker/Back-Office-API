@@ -2,7 +2,7 @@ import os
 import time
 import uvicorn
 from dotenv import load_dotenv
-from Router.Auth.AuthRouter import google
+from Router.Auth.AuthRouter import google, account
 from Router.Video.VideoRouter import video
 from Router.Youtube.YoutubeRouter import youtube
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,6 +15,7 @@ app = FastAPI()
 
 # Router 추가
 app.include_router(google)
+app.include_router(account)
 app.include_router(youtube)
 app.include_router(prompt)
 app.include_router(scheduler)

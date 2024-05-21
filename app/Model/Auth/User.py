@@ -31,6 +31,7 @@ class User:
                     Models.User.socialType: socialType,
                     Models.User.email: email,
                     Models.User.name: name,
+                    Models.User.trial: 'Y',
                     Models.User.updatedAt: func.now()
                 })
                 .on_duplicate_key_update(
@@ -53,6 +54,19 @@ class User:
             self.db.query(Models.User).filter(Models.User.uuid == uuid, Models.User.socialType == socialType).update({
                 'email': email,
                 'name': name,
+                'updatedAt': func.now()
+            })
+            self.db.commit()
+            return True
+        except:
+            return False
+        finally:
+            self.db.close()
+
+    def updateTrialStatus(self, uuid, trialStatus):
+        try:
+            self.db.query(Models.User).filter(Models.User.uuid == uuid).update({
+                'trial': trialStatus,
                 'updatedAt': func.now()
             })
             self.db.commit()
