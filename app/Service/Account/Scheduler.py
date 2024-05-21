@@ -1,10 +1,10 @@
 import os
-import time
 import yaml
 from kubernetes import utils
 from kubernetes import config
 from kubernetes import client as kubernetes_client
 from Model.Account.Schedule import Schedule as scheduleModel
+from Model.Auth.User import User as userModel
 
 
 def getJobScheduleInfo(uuid):
@@ -42,7 +42,12 @@ def createScheduler(uuid):
         if scheduleInfo is None:
             raise 'jobschedule info call fail'
 
-        return __createCronjob(uuid, scheduleInfo['cronSchedule'])
+        userInfo = userModel().getUser(uuid)
+
+        if userInfo['trial'] == 'Y':
+            return __createTrialDeployment()
+        else :
+            return __createCronjob(uuid, scheduleInfo['cronSchedule'])
     except:
         return {
             'result': False,
@@ -112,6 +117,42 @@ def __createCronjob(uuid, schedule='*/20 * * * *'):
         return {
             'result': False,
             'message': 'scheduler create fail'
+        }
+
+def __createTrialDeployment(uuid):
+    config.load_kube_config('Config/Kubernetes/kube.yaml')
+
+    k8s_client = kubernetes_client.api_client.ApiClient()
+    k8s_pod_client = kubernetes_client.CoreV1Api()
+
+    with open("Config/Kubernetes/TrialDeployment.yaml") as f:
+        trialYaml = yaml.safe_load(f)
+        f.close()
+
+    trialYaml['metadata']['name'] = uuid
+    trialYaml['spec']['containers'][0]['image'] = os.getenv('K8S_DOCKER_IMAGE')
+    trialYaml['spec']['containers'][0]['volumeMounts'][0]['mountPath'] = trialYaml['spec']['containers'][0]['volumeMounts'][0]['mountPath'].replace('{UUID}', uuid)
+    trialYaml['spec']['volumes'][0]['hostPath']['path'] = trialYaml['spec']['volumes'][0]['hostPath']['path'].replace('{UUID}', uuid)
+
+    for env in trialYaml['spec']['containers'][0]['env']:
+        if env['name'] == 'UUID':
+            env['value'] = uuid
+        elif env['name'] == 'RESOURCE_PATH':
+            env['value'] = f'./Resource'
+        else:
+            env['value'] = os.getenv(env['name'])
+
+    utils.create_from_yaml(k8s_client, yaml_objects=[trialYaml], namespace="default")
+
+    try:
+        k8s_pod_client.read_namespaced_pod(uuid, os.getenv('K8S_NAMESPACE'))
+        return {
+            'result': True
+        }
+    except:
+        return {
+            'result': False,
+            'message': 'trial pod create fail'
         }
 
 
