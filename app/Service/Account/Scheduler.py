@@ -45,13 +45,19 @@ def createScheduler(uuid):
         userInfo = userModel().getUser(uuid)
 
         if userInfo['trial'] == 'Y':
-            return __createTrialDeployment()
+            if userInfo['trialCount'] < 1:
+                raise Exception('trial is end')
+
+            trialPodCreateResult = __createTrialDeployment(uuid)
+
+            if trialPodCreateResult:
+                userModel().minusTrialCount(uuid)
         else :
             return __createCronjob(uuid, scheduleInfo['cronSchedule'])
-    except:
+    except Exception as e:
         return {
             'result': False,
-            'message': 'scheduler create fail'
+            'message': e if e is not None else 'scheduler create fail'
         }
 
 
@@ -129,7 +135,7 @@ def __createTrialDeployment(uuid):
         trialYaml = yaml.safe_load(f)
         f.close()
 
-    trialYaml['metadata']['name'] = uuid
+    trialYaml['metadata']['name'] = f'{uuid}-trial'
     trialYaml['spec']['containers'][0]['image'] = os.getenv('K8S_DOCKER_IMAGE')
     trialYaml['spec']['containers'][0]['volumeMounts'][0]['mountPath'] = trialYaml['spec']['containers'][0]['volumeMounts'][0]['mountPath'].replace('{UUID}', uuid)
     trialYaml['spec']['volumes'][0]['hostPath']['path'] = trialYaml['spec']['volumes'][0]['hostPath']['path'].replace('{UUID}', uuid)

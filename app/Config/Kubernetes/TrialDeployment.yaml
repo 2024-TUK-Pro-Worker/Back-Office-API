@@ -34,14 +34,14 @@ spec:
     command:
       - python3
       - main.py
-    imagePullSecrets:
-      - name: dockerhub-secret
-    volumes:
-      - name: shared-data
-        hostPath:
-          path: /home/shareDisk/fileDisk/{UUID}
-          type: Directory
-      - name: google-config
-        hostPath:
-          path: /home/shareDisk/Config/Google
-          type: Directory
+  imagePullSecrets:
+    - name: dockerhub-secret
+  volumes:
+    - name: shared-data
+      hostPath:
+        path: /home/shareDisk/fileDisk/{UUID}
+        type: Directory
+    - name: google-config
+      hostPath:
+        path: /home/shareDisk/Config/Google
+        type: Directory

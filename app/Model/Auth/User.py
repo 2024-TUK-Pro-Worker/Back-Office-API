@@ -75,3 +75,18 @@ class User:
             return False
         finally:
             self.db.close()
+
+    def minusTrialCount(self, uuid):
+        try:
+            trialCountResult = self.db.query(Models.User.trialCount).filter(Models.User.uuid == uuid).first()
+
+            self.db.query(Models.User).filter(Models.User.uuid == uuid).update({
+                'trialCount': (int(trialCountResult[0]) - 1),
+                'updatedAt': func.now()
+            })
+            self.db.commit()
+            return True
+        except:
+            return False
+        finally:
+            self.db.close()
