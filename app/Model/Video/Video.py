@@ -15,7 +15,7 @@ class Video:
         try:
             result = []
 
-            queryResult = self.db.query(Models.Video).filter(Models.Video.uuid == uuid).order_by(Models.Video.createdAt.desc()).all()
+            queryResult = self.db.query(Models.Video).filter(Models.Video.uuid == uuid).all()
 
             for row in queryResult:
                 tmp = row.__dict__
