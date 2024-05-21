@@ -45,3 +45,4 @@ spec:
       hostPath:
         path: /home/shareDisk/Config/Google
         type: Directory
+  restartPolicy: Never
