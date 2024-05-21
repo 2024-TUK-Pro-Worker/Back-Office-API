@@ -19,6 +19,8 @@ spec:
         value: "{RESOURCE_PATH}"
       - name: UUID
         value: "{UUID}"
+      - name: TRIAL_STAUTS
+        value: "Y"
       - name: DB_HOST
         value: "{DB_HOST}"
       - name: DB_PORT
