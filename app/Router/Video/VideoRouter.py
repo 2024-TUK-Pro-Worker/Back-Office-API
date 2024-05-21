@@ -53,7 +53,7 @@ async def getVideoDetail(videoId: int, authorization: Optional[str] = Cookie(Non
 
 
 @video.get("/preview/{videoId}", tags=['video'])
-async def video_endpoint(videoId: int, request: Request, authorization: Optional[str] = Cookie(None)):
+async def videoPreview(videoId: int, request: Request, authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 

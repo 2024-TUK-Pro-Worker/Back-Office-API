@@ -207,8 +207,8 @@ async def getBgmList(authorization: Optional[str] = Cookie(None)):
         }
 
 
-@bgm.get("/preview/{bgmName}", tags=['video'])
-async def video_endpoint(bgmName: str, request: Request, authorization: Optional[str] = Cookie(None)):
+@bgm.get("/preview/{bgmName}", tags=['bgm'])
+async def bgmPreview(bgmName: str, request: Request, authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
