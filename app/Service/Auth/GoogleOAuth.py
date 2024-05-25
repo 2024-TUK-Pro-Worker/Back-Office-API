@@ -46,8 +46,7 @@ def authGoogle(code: str):
     email = user_info.json().get("email")
     userName = user_info.json().get("name")
     currentDt = datetime.utcnow()
-    # expireAt = currentDt + timedelta(seconds=googleToken.json().get('expires_in'))
-    expireAt = currentDt + timedelta(seconds=5)
+    expireAt = currentDt + timedelta(seconds=googleToken.json().get('expires_in'))
 
     userInfo = userModel().getUser(uuid)
 
