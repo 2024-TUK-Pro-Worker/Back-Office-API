@@ -52,7 +52,9 @@ def createScheduler(uuid):
 
             if trialPodCreateResult:
                 userModel().minusTrialCount(uuid)
-        else :
+
+            return trialPodCreateResult
+        else:
             return __createCronjob(uuid, scheduleInfo['cronSchedule'])
     except Exception as e:
         return {
@@ -151,7 +153,7 @@ def __createTrialDeployment(uuid):
     utils.create_from_yaml(k8s_client, yaml_objects=[trialYaml], namespace="default")
 
     try:
-        k8s_pod_client.read_namespaced_pod(uuid, os.getenv('K8S_NAMESPACE'))
+        k8s_pod_client.read_namespaced_pod(f'{uuid}-trial', os.getenv('K8S_NAMESPACE'))
         return {
             'result': True
         }

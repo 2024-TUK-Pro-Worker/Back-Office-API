@@ -1,6 +1,7 @@
 import os
 import time
 import uvicorn
+from jose import jwt
 from dotenv import load_dotenv
 from Router.Auth.AuthRouter import google, account
 from Router.Video.VideoRouter import video
@@ -40,17 +41,33 @@ app.add_middleware(
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
-    if '/auth/' not in request.url.path and request.cookies.get('authorization') is None and request.method != 'OPTIONS':
+    try:
+        if '/auth/' not in request.url.path:
+            if request.cookies.get('authorization') is None and request.method != 'OPTIONS':
+                return responses.JSONResponse({
+                    'result': 'fail',
+                    'message': '403 Forbidden'
+                }, status_code=403)
+
+            # JWT 정상 변경 가능 여부 확인
+            jwtToken = request.cookies.get('authorization')
+            jwt.decode(jwtToken, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
+
+        start_time = time.time()
+        response = await call_next(request)
+        process_time = time.time() - start_time
+        response.headers["X-Process-Time"] = str(process_time)
+        return response
+    except jwt.ExpiredSignatureError:
         return responses.JSONResponse({
             'result': 'fail',
-            'message': '403 Forbidden'
-        }, status_code=403)
-
-    start_time = time.time()
-    response = await call_next(request)
-    process_time = time.time() - start_time
-    response.headers["X-Process-Time"] = str(process_time)
-    return response
+            'message': 'Signature has expired. '
+        }, status_code=401)
+    except Exception as e:
+        return responses.JSONResponse({
+            'result': 'fail',
+            'message': 'internal server error'
+        }, status_code=500)
 
 
 if __name__ == "__main__":

@@ -45,8 +45,9 @@ def authGoogle(code: str):
     uuid = user_info.json().get("id")
     email = user_info.json().get("email")
     userName = user_info.json().get("name")
-    currentDt = datetime.now()
-    expireAt = currentDt + timedelta(seconds=googleToken.json().get('expires_in'))
+    currentDt = datetime.utcnow()
+    # expireAt = currentDt + timedelta(seconds=googleToken.json().get('expires_in'))
+    expireAt = currentDt + timedelta(seconds=5)
 
     userInfo = userModel().getUser(uuid)
 
@@ -107,10 +108,14 @@ def authGoogle(code: str):
     if not loginResult:
         return False
 
+    finalUserInfo = userModel().getUser(uuid)
+    trialUser = finalUserInfo['trial'] == 'Y'
+
     data = {
         "uuid": uuid,
         "name": userName,
         "email": email,
+        "trialUser": trialUser,
         "exp": expireAt
     }
 
