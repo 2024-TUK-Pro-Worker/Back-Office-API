@@ -24,7 +24,7 @@ app.include_router(video)
 app.include_router(bgm)
 
 origins = [
-    "https://api-aishortmaker.lacy.co.kr",
+    "https://api-aishortsmaker.lacy.co.kr",
     "https://aishortsmaker.lacy.co.kr",
     "http://localhost",
     "http://localhost:3000",
