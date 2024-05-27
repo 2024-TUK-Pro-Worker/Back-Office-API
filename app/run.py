@@ -31,14 +31,6 @@ origins = [
     "http://localhost:8081"
 ]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"]
-)
-
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     try:
@@ -70,6 +62,14 @@ async def add_process_time_header(request: Request, call_next):
             'message': 'internal server error'
         }, status_code=500)
 
+# middleware cors 적용
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 if __name__ == "__main__":
     uvicorn.run("run:app", host='0.0.0.0', port=int(os.getenv('SERVER_PORT')), log_level="info", reload=True)
