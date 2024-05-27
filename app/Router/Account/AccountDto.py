@@ -1,5 +1,8 @@
+# Python 모듈
 from typing import Union
 from pydantic import BaseModel
+
+# 소스 파일 선언
 
 
 class RQ_patchPromptInfo(BaseModel):

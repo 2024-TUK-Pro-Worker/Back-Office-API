@@ -1,8 +1,11 @@
+# Python 모듈
 import os
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
 from google.oauth2.credentials import Credentials
+
+# 소스 파일 선언
 from Model.Auth.Login import Login as loginModel
 from Model.Video.Video import Video as videoModel
 

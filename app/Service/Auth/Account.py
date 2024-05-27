@@ -1,5 +1,9 @@
+# Python 모듈
 import os
+
+# 소스 파일 선언
 from Model.Auth.User import User as userModel
+
 
 def trialStatusOff(uuid):
     try:
@@ -22,4 +26,3 @@ def trialStatusOff(uuid):
             'result': False,
             'message': e
         }
-

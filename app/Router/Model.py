@@ -1,5 +1,8 @@
+# Python 모듈
 from typing import Union, List
 from pydantic import BaseModel
+
+# 소스 파일 선언
 
 
 class RS_common(BaseModel):

@@ -1,3 +1,6 @@
+# Python 모듈
+
+# 소스 파일 선언
 from Model.Account.Prompt import Prompt as promptModel
 
 

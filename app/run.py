@@ -1,13 +1,16 @@
+# Python 모듈
 import os
 import time
 import uvicorn
 from jose import jwt
 from dotenv import load_dotenv
+from fastapi import FastAPI, Request, responses
+from fastapi.middleware.cors import CORSMiddleware
+
+# 소스 파일 선언
 from Router.Auth.AuthRouter import google, account
 from Router.Video.VideoRouter import video
 from Router.Youtube.YoutubeRouter import youtube
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI, Cookie, Request, responses
 from Router.Account.AccountRouter import prompt, scheduler, bgm
 
 load_dotenv()

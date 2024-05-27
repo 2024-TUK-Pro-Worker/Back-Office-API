@@ -1,7 +1,10 @@
+# Python 모듈
 import os
 from pydub import *
 from typing import BinaryIO
 from moviepy.editor import *
+
+# 소스 파일 선언
 from Model.Video.Video import Video as videoModel
 
 

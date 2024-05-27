@@ -1,3 +1,6 @@
+# Python 모듈
+
+# 소스 파일 선언
 from Model import Models
 from Config.DataBase.database import engine, SessionLocal
 

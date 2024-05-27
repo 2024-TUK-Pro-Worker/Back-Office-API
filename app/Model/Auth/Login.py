@@ -1,6 +1,9 @@
-from Model import Models
+# Python 모듈
 from sqlalchemy import func
 from sqlalchemy.dialects.mysql import insert
+
+# 소스 파일 선언
+from Model import Models
 from Config.DataBase.database import engine, SessionLocal
 
 Models.Base.metadata.create_all(bind=engine)

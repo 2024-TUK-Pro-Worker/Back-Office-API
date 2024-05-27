@@ -1,6 +1,9 @@
+# Python 모듈
 import os
 from typing import Union, Optional
 from fastapi import APIRouter, Cookie
+
+# 소스 파일 선언
 from Service.Auth.Account import *
 from Service.Auth.GoogleOAuth import *
 from Router import Model as DefaultRoutingModel
@@ -23,7 +26,7 @@ async def getCallback(code: str):
 
 
 @account.patch('/trial/off', tags=['account'],
-              response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
+               response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
 async def patchTrialStatusOff(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")

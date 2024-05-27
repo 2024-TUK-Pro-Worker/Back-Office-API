@@ -1,9 +1,12 @@
+# Python 모듈
 import os
 from jose import jwt
 from typing import Optional, Union
+from fastapi import APIRouter, Cookie, UploadFile, responses, Request, status
+
+# 소스 파일 선언
 from Router import Model as DefaultRoutingModel
 from Router.Account import AccountDto as RoutingModel
-from fastapi import APIRouter, Cookie, UploadFile, responses, Request, status
 from Service.Account import Prompt as PromptService, Bgm as BgmService, Scheduler as SchedulerService
 
 prompt = APIRouter(prefix='/api/account/prompt')

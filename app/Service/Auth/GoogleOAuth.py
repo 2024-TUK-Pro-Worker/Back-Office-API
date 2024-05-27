@@ -1,3 +1,4 @@
+# Python 모듈
 import os
 import shutil
 import requests
@@ -5,11 +6,11 @@ from jose import jwt
 from datetime import *
 from dotenv import load_dotenv
 from fastapi.responses import RedirectResponse
+
+# 소스 파일 선언
 from Model.Auth.User import User as userModel
 from Model.Auth.Login import Login as loginModel
 from Model.Account.Prompt import Prompt as promptModel
-
-load_dotenv()
 
 # Google OAuth 관련 환경변수 상수 선언
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')

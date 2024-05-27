@@ -1,10 +1,13 @@
+# Python 모듈
 import os
 import yaml
 from kubernetes import utils
 from kubernetes import config
 from kubernetes import client as kubernetes_client
-from Model.Account.Schedule import Schedule as scheduleModel
+
+# 소스 파일 선언
 from Model.Auth.User import User as userModel
+from Model.Account.Schedule import Schedule as scheduleModel
 
 
 def getJobScheduleInfo(uuid):

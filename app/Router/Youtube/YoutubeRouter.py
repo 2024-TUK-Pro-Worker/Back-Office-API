@@ -1,10 +1,13 @@
+# Python 모듈
 import os
 from jose import jwt
 from typing import Union, Optional
 from fastapi import APIRouter, Cookie
-from Service.ThirdParty.Youtube import Youtube as YoutubeService
+
+# 소스 파일 선언
 from Router import Model as DefaultRoutingModel
 from Router.Youtube import YoutubeDto as RoutingModel
+from Service.ThirdParty.Youtube import Youtube as YoutubeService
 
 youtube = APIRouter(prefix='/api/youtube')
 

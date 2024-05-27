@@ -1,10 +1,13 @@
+# Python 모듈
 import os
 from jose import jwt
 from typing import Optional, Union
+from fastapi import APIRouter, Cookie, responses, Request, status
+
+# 소스 파일 선언
 from Router import Model as DefaultRoutingModel
 from Service.Video import Info as DetailService
 from Router.Video import VideoDto as RoutingModel
-from fastapi import APIRouter, Cookie, responses, Request, status
 
 video = APIRouter(prefix='/api/video')
 

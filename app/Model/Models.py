@@ -1,4 +1,7 @@
+# Python 모듈
 from sqlalchemy import Column, Text, INT, DateTime, CHAR, VARCHAR, text
+
+# 소스 파일 선언
 from Config.DataBase.database import Base
 
 
@@ -13,7 +16,8 @@ class Login(Base):
     expiresIn = Column(INT, nullable=False)
     scope = Column(Text, nullable=False)
     expireAt = Column(DateTime, index=True, nullable=False)
-    updatedAt = Column(DateTime, index=True, nullable=False, server_default=text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
+    updatedAt = Column(DateTime, index=True, nullable=False,
+                       server_default=text('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
 
 
 class User(Base):

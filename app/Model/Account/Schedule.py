@@ -1,3 +1,6 @@
+# Python 모듈
+
+# 소스 파일 선언
 from Model import Models
 from Config.DataBase.database import engine, SessionLocal
 
@@ -26,8 +29,9 @@ class Schedule:
             data = self.db.query(Models.Schedule).filter(Models.Schedule.uuid == uuid).first()
             if data.__str__() == 'None':
                 self.db.add(Models.Schedule(uuid=uuid, cronSchedule=cronSchedule))
-            else :
-                self.db.query(Models.Schedule).filter(Models.Schedule.uuid == uuid).update({'cronSchedule': cronSchedule})
+            else:
+                self.db.query(Models.Schedule).filter(Models.Schedule.uuid == uuid).update(
+                    {'cronSchedule': cronSchedule})
             self.db.commit()
             return True
         except:
