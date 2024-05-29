@@ -14,7 +14,7 @@ youtube = APIRouter(prefix='/api/youtube')
 
 @youtube.post('/upload', tags=['youtube'],
               response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def postUploadToYoutube(params: RoutingModel.RQ_postUploadToYoutube, authorization: Optional[str] = Cookie(None)):
+def postUploadToYoutube(params: RoutingModel.RQ_postUploadToYoutube, authorization: Optional[str] = Cookie(None)):
     try:
         params = params.dict()
 
@@ -41,7 +41,7 @@ async def postUploadToYoutube(params: RoutingModel.RQ_postUploadToYoutube, autho
 
 @youtube.delete('/delete', tags=['youtube'],
                 response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def deleteYoutubeVideo(params: RoutingModel.RQ_deleteYoutubeVideo, authorization: Optional[str] = Cookie(None)):
+def deleteYoutubeVideo(params: RoutingModel.RQ_deleteYoutubeVideo, authorization: Optional[str] = Cookie(None)):
     try:
         params = params.dict()
 

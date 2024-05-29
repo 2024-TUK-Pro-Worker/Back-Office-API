@@ -16,11 +16,11 @@ bgm = APIRouter(prefix='/api/account/bgm')
 
 # 프롬프트
 @prompt.get('', tags=['prompt'], response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def getPromptInfo(authorization: Optional[str] = Cookie(None)):
+def getPromptInfo(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = PromptService.getPrompt(jwtData.get('uuid'))
+        result = await PromptService.getPrompt(jwtData.get('uuid'))
 
         if result is None:
             raise Exception('prompt info call fail')
@@ -38,11 +38,11 @@ async def getPromptInfo(authorization: Optional[str] = Cookie(None)):
 
 @prompt.patch('/update', tags=['prompt'],
               response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def patchPromptInfo(params: RoutingModel.RQ_patchPromptInfo, authorization: Optional[str] = Cookie(None)):
+def patchPromptInfo(params: RoutingModel.RQ_patchPromptInfo, authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = PromptService.updatePrompt(jwtData.get('uuid'), params.content)
+        result = await PromptService.updatePrompt(jwtData.get('uuid'), params.content)
 
         if not result:
             raise Exception('prompt info update fail')
@@ -63,11 +63,11 @@ async def patchPromptInfo(params: RoutingModel.RQ_patchPromptInfo, authorization
 # 스케줄러
 @scheduler.get('/schedule', tags=['scheduler'],
                response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def getScheduleInfo(authorization: Optional[str] = Cookie(None)):
+def getScheduleInfo(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = SchedulerService.getJobScheduleInfo(jwtData.get('uuid'))
+        result = await SchedulerService.getJobScheduleInfo(jwtData.get('uuid'))
 
         if result is None:
             raise Exception('schedule info call fail')
@@ -85,11 +85,11 @@ async def getScheduleInfo(authorization: Optional[str] = Cookie(None)):
 
 @scheduler.patch('/schedule/update', tags=['scheduler'],
                  response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def patchScheduleInfo(params: RoutingModel.RQ_patchScheduleInfo, authorization: Optional[str] = Cookie(None)):
+def patchScheduleInfo(params: RoutingModel.RQ_patchScheduleInfo, authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = SchedulerService.setJobScheduleInfo(jwtData.get('uuid'), params.schedule)
+        result = await SchedulerService.setJobScheduleInfo(jwtData.get('uuid'), params.schedule)
 
         if not result:
             raise Exception('schedule info update fail')
@@ -108,11 +108,11 @@ async def patchScheduleInfo(params: RoutingModel.RQ_patchScheduleInfo, authoriza
 
 
 @scheduler.get('/status', tags=['scheduler'], response_model=RoutingModel.RS_getSchedulerStatus)
-async def getSchedulerStatus(authorization: Optional[str] = Cookie(None)):
+def getSchedulerStatus(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = SchedulerService.getSchedulerStatus(jwtData.get('uuid'))
+        result = await SchedulerService.getSchedulerStatus(jwtData.get('uuid'))
 
         if result is None:
             raise Exception('scheduler is None')
@@ -141,11 +141,11 @@ async def getSchedulerStatus(authorization: Optional[str] = Cookie(None)):
 
 @scheduler.post('/create', tags=['scheduler'],
                 response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def postSchedulerCreate(authorization: Optional[str] = Cookie(None)):
+def postSchedulerCreate(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = SchedulerService.createScheduler(jwtData.get('uuid'))
+        result = await SchedulerService.createScheduler(jwtData.get('uuid'))
 
         if not result or result['result'] is False:
             raise Exception(result['message'] if result['result'] is not None else 'schedule create fail')
@@ -165,11 +165,11 @@ async def postSchedulerCreate(authorization: Optional[str] = Cookie(None)):
 
 @scheduler.delete('/delete', tags=['scheduler'],
                   response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def deleteScheduler(authorization: Optional[str] = Cookie(None)):
+def deleteScheduler(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = SchedulerService.deleteScheduler(jwtData.get('uuid'))
+        result = await SchedulerService.deleteScheduler(jwtData.get('uuid'))
 
         if not result['result']:
             raise Exception(result['message'])
@@ -188,11 +188,11 @@ async def deleteScheduler(authorization: Optional[str] = Cookie(None)):
 
 
 @bgm.get('', tags=['bgm'], response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def getBgmList(authorization: Optional[str] = Cookie(None)):
+def getBgmList(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = BgmService.getBgmList(jwtData.get('uuid'))
+        result = await BgmService.getBgmList(jwtData.get('uuid'))
 
         if result is None:
             result = []
@@ -211,13 +211,13 @@ async def getBgmList(authorization: Optional[str] = Cookie(None)):
 
 
 @bgm.get("/preview/{bgmName}", tags=['bgm'])
-async def bgmPreview(bgmName: str, request: Request, authorization: Optional[str] = Cookie(None)):
+def bgmPreview(bgmName: str, request: Request, authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
         rangeHeader = request.headers.get("range")
 
-        result = BgmService.getPreviewInfo(jwtData.get('uuid'), bgmName, rangeHeader)
+        result = await BgmService.getPreviewInfo(jwtData.get('uuid'), bgmName, rangeHeader)
 
         if result['result'] is False:
             raise Exception(result['message'])
@@ -255,11 +255,11 @@ async def bgmPreview(bgmName: str, request: Request, authorization: Optional[str
 
 
 @bgm.post('/insert', tags=['bgm'], response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def postUploadBgm(fileList: list[UploadFile], authorization: Optional[str] = Cookie(None)):
+def postUploadBgm(fileList: list[UploadFile], authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = BgmService.uploadBgmFile(jwtData.get('uuid'), fileList)
+        result = await BgmService.uploadBgmFile(jwtData.get('uuid'), fileList)
 
         return {
             'result': 'success',
@@ -276,7 +276,7 @@ async def postUploadBgm(fileList: list[UploadFile], authorization: Optional[str]
 
 
 @bgm.delete('/remove', tags=['bgm'], response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def deleteBgmFile(params: RoutingModel.RQ_deleteBgmFile, authorization: Optional[str] = Cookie(None)):
+def deleteBgmFile(params: RoutingModel.RQ_deleteBgmFile, authorization: Optional[str] = Cookie(None)):
     try:
         allowExtention = {'mp3'}
 
@@ -285,7 +285,7 @@ async def deleteBgmFile(params: RoutingModel.RQ_deleteBgmFile, authorization: Op
 
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = BgmService.deleteBgmFile(jwtData.get('uuid'), params.fileName)
+        result = await BgmService.deleteBgmFile(jwtData.get('uuid'), params.fileName)
 
         if not result['result']:
             raise Exception(result['message'])

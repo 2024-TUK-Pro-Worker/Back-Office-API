@@ -13,7 +13,7 @@ video = APIRouter(prefix='/api/video')
 
 
 @video.get('/list', tags=['video'], response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def getVideoList(authorization: Optional[str] = Cookie(None)):
+def getVideoList(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
@@ -35,7 +35,7 @@ async def getVideoList(authorization: Optional[str] = Cookie(None)):
 
 @video.get('/detail/{videoId}', tags=['video'],
            response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def getVideoDetail(videoId: int, authorization: Optional[str] = Cookie(None)):
+def getVideoDetail(videoId: int, authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
@@ -56,7 +56,7 @@ async def getVideoDetail(videoId: int, authorization: Optional[str] = Cookie(Non
 
 
 @video.get("/preview/{videoId}", tags=['video'])
-async def videoPreview(videoId: int, request: Request, authorization: Optional[str] = Cookie(None)):
+def videoPreview(videoId: int, request: Request, authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
@@ -100,7 +100,7 @@ async def videoPreview(videoId: int, request: Request, authorization: Optional[s
 
 
 @video.put('/detail', tags=['video'], response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def putVideoDetail(params: RoutingModel.RQ_setDetail, authorization: Optional[str] = Cookie(None)):
+def putVideoDetail(params: RoutingModel.RQ_setDetail, authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
@@ -128,7 +128,7 @@ async def putVideoDetail(params: RoutingModel.RQ_setDetail, authorization: Optio
 
 @video.patch('/bgm/set', tags=['video'],
              response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def patchBgmToVideo(params: RoutingModel.RQ_appendBgmToVideo, authorization: Optional[str] = Cookie(None)):
+def patchBgmToVideo(params: RoutingModel.RQ_appendBgmToVideo, authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
