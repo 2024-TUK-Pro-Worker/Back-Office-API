@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: gunicorn -w 8 -k uvicorn.workers.UvicornWorker run:app -b 0.0.0.0:${SERVER_PORT}
+    command: gunicorn -w 8 -k uvicorn.workers.UvicornWorker run:app -b 0.0.0.0:${SERVER_PORT} --timeout=180
     ports:
       - ${SERVER_PORT}:${SERVER_PORT}
     volumes:
