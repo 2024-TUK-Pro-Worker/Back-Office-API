@@ -13,12 +13,12 @@ account = APIRouter(prefix='/api/account')
 
 
 @google.get('/login', tags=['googleAuth'])
-def getUrl():
+async def getUrl():
     return getOAuthUrl()
 
 
 @google.get('/callback', tags=['googleAuth'])
-def getCallback(code: str):
+async def getCallback(code: str):
     jwtToken = authGoogle(code)
     response = RedirectResponse(f"https://{os.getenv('FRONT_HOST')}/")
     response.set_cookie(key="authorization", value=jwtToken, path="/", domain=f"{os.getenv('DOAMIN')}")
@@ -27,11 +27,11 @@ def getCallback(code: str):
 
 @account.patch('/trial/off', tags=['account'],
                response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-def patchTrialStatusOff(authorization: Optional[str] = Cookie(None)):
+async def patchTrialStatusOff(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = await trialStatusOff(jwtData.get('uuid'))
+        result = trialStatusOff(jwtData.get('uuid'))
 
         if result['result'] is False:
             raise Exception(result['message'])

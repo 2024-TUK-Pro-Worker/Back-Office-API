@@ -35,7 +35,7 @@ origins = [
 ]
 
 @app.middleware("http")
-def add_process_time_header(request: Request, call_next):
+async def add_process_time_header(request: Request, call_next):
     try:
         if '/auth/' not in request.url.path:
             if request.method != 'OPTIONS':
@@ -50,7 +50,7 @@ def add_process_time_header(request: Request, call_next):
                 jwt.decode(jwtToken, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
         start_time = time.time()
-        response = call_next(request)
+        response = await call_next(request)
         process_time = time.time() - start_time
         response.headers["X-Process-Time"] = str(process_time)
         return response
