@@ -17,7 +17,7 @@ async def getVideoList(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = DetailService.getList(jwtData.get('uuid'))
+        result = await DetailService.getList(jwtData.get('uuid'))
 
         if result is None:
             raise Exception('video list is None')
@@ -39,7 +39,7 @@ async def getVideoDetail(videoId: int, authorization: Optional[str] = Cookie(Non
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = DetailService.getDetail(jwtData.get('uuid'), videoId)
+        result = await DetailService.getDetail(jwtData.get('uuid'), videoId)
 
         if result is None:
             raise Exception('video info is None')
@@ -62,7 +62,7 @@ async def videoPreview(videoId: int, request: Request, authorization: Optional[s
 
         rangeHeader = request.headers.get("range")
 
-        result = DetailService.getPreviewInfo(jwtData.get('uuid'), videoId, rangeHeader)
+        result = await DetailService.getPreviewInfo(jwtData.get('uuid'), videoId, rangeHeader)
 
         if result['result'] is False:
             raise Exception(result['message'])
@@ -104,7 +104,7 @@ async def putVideoDetail(params: RoutingModel.RQ_setDetail, authorization: Optio
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = DetailService.updateDetail(
+        result = await DetailService.updateDetail(
             jwtData.get('uuid'), params.videoId, params.title,
             params.content, params.tags
         )
@@ -132,7 +132,7 @@ async def patchBgmToVideo(params: RoutingModel.RQ_appendBgmToVideo, authorizatio
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = DetailService.insertIntoVideo(
+        result = await DetailService.insertIntoVideo(
             jwtData.get('uuid'), params.videoId, params.bgmFileName
         )
 

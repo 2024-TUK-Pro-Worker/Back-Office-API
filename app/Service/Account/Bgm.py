@@ -6,7 +6,7 @@ from typing import BinaryIO
 
 
 
-def getBgmList(uuid: str):
+async def getBgmList(uuid: str):
     try:
         storagePath = f"./Resource/Storage/{uuid}/Bgm"
         if not os.path.isdir(storagePath):
@@ -20,7 +20,7 @@ def getBgmList(uuid: str):
         return None
 
 
-def getPreviewInfo(uuid, bgmName, rangeHeader):
+async def getPreviewInfo(uuid, bgmName, rangeHeader):
     try:
         bgmPath = f"./Resource/Storage/{uuid}/Bgm/{bgmName}.mp3"
 
@@ -62,7 +62,7 @@ def getPreviewVideo(fileObj: BinaryIO, start: int, end: int):
             yield f.read(readSize)
 
 
-def uploadBgmFile(uuid: str, fileList: list):
+async def uploadBgmFile(uuid: str, fileList: list):
     global fileUploadResult
 
     try:
@@ -108,7 +108,7 @@ def uploadBgmFile(uuid: str, fileList: list):
         }
 
 
-def deleteBgmFile(uuid: str, fileName: str):
+async def deleteBgmFile(uuid: str, fileName: str):
     try:
         filePath = f"./Resource/Storage/{uuid}/Bgm/{fileName}"
         if not os.path.isfile(filePath):

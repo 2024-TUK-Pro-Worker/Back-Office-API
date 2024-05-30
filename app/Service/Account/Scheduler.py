@@ -10,21 +10,21 @@ from Model.Auth.User import User as userModel
 from Model.Account.Schedule import Schedule as scheduleModel
 
 
-def getJobScheduleInfo(uuid):
+async def getJobScheduleInfo(uuid):
     try:
         return scheduleModel().getSchedule(uuid)
     except:
         return None
 
 
-def setJobScheduleInfo(uuid, cronSchedule):
+async def setJobScheduleInfo(uuid, cronSchedule):
     try:
         return scheduleModel().setSchedule(uuid, cronSchedule)
     except:
         return False
 
 
-def getSchedulerStatus(uuid):
+async def getSchedulerStatus(uuid):
     try:
         config.load_kube_config('Config/Kubernetes/kube.yaml')
 
@@ -38,7 +38,7 @@ def getSchedulerStatus(uuid):
         return None
 
 
-def createScheduler(uuid):
+async def createScheduler(uuid):
     try:
         scheduleInfo = getJobScheduleInfo(uuid)
 
@@ -51,14 +51,14 @@ def createScheduler(uuid):
             if userInfo['trialCount'] < 1:
                 raise Exception('trial is end')
 
-            trialPodCreateResult = __createTrialDeployment(uuid)
+            trialPodCreateResult = await __createTrialDeployment(uuid)
 
             if trialPodCreateResult:
                 userModel().minusTrialCount(uuid)
 
             return trialPodCreateResult
         else:
-            return __createCronjob(uuid, scheduleInfo['cronSchedule'])
+            return await __createCronjob(uuid, scheduleInfo['cronSchedule'])
     except Exception as e:
         return {
             'result': False,
@@ -66,9 +66,9 @@ def createScheduler(uuid):
         }
 
 
-def deleteScheduler(uuid):
+async def deleteScheduler(uuid):
     try:
-        return __deleteCronjob(uuid)
+        return await __deleteCronjob(uuid)
     except:
         return {
             'result': False,
@@ -76,7 +76,7 @@ def deleteScheduler(uuid):
         }
 
 
-def __createCronjob(uuid, schedule='*/20 * * * *'):
+async def __createCronjob(uuid, schedule='*/20 * * * *'):
     config.load_kube_config('Config/Kubernetes/kube.yaml')
 
     k8s_client = kubernetes_client.api_client.ApiClient()
@@ -130,7 +130,7 @@ def __createCronjob(uuid, schedule='*/20 * * * *'):
             'message': 'scheduler create fail'
         }
 
-def __createTrialDeployment(uuid):
+async def __createTrialDeployment(uuid):
     config.load_kube_config('Config/Kubernetes/kube.yaml')
 
     k8s_client = kubernetes_client.api_client.ApiClient()
@@ -167,7 +167,7 @@ def __createTrialDeployment(uuid):
         }
 
 
-def __deleteCronjob(uuid):
+async def __deleteCronjob(uuid):
     config.load_kube_config('Config/Kubernetes/kube.yaml')
 
     k8s_batch_client = kubernetes_client.BatchV1Api()

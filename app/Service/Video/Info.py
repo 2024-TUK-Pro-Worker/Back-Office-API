@@ -8,7 +8,7 @@ from moviepy.editor import *
 from Model.Video.Video import Video as videoModel
 
 
-def getList(uuid):
+async def getList(uuid):
     try:
         videoList = videoModel().getVideoList(uuid)
 
@@ -16,7 +16,7 @@ def getList(uuid):
             raise Exception('video data is None')
 
         for videoInfo in videoList:
-            appendBgm = __getAppendBgmStatus(uuid, videoInfo['gptTitle'])
+            appendBgm = await __getAppendBgmStatus(uuid, videoInfo['gptTitle'])
             if appendBgm['result'] is False:
                 videoInfo['appendBgm'] = 'error'
             else:
@@ -27,14 +27,14 @@ def getList(uuid):
         return None
 
 
-def getDetail(uuid, videoId):
+async def getDetail(uuid, videoId):
     try:
         return videoModel().getVideoInfo(uuid, videoId)
     except:
         return None
 
 
-def __getAppendBgmStatus(uuid, videoName):
+async def __getAppendBgmStatus(uuid, videoName):
     try:
         videoPath = f"./Resource/Storage/{uuid}/Upload/{videoName}.mp4"
         videoTmpPath = f"./Resource/Storage/{uuid}/Upload/tmp/{videoName}.mp4"
@@ -57,7 +57,7 @@ def __getAppendBgmStatus(uuid, videoName):
         }
 
 
-def getPreviewInfo(uuid, videoId, rangeHeader):
+async def getPreviewInfo(uuid, videoId, rangeHeader):
     try:
         videoInfo = videoModel().getVideoInfo(uuid, videoId)
 
@@ -98,7 +98,7 @@ def getPreviewInfo(uuid, videoId, rangeHeader):
         }
 
 
-def getPreviewVideo(fileObj: BinaryIO, start: int, end: int, chunk: int = 1024 * 1792):
+async def getPreviewVideo(fileObj: BinaryIO, start: int, end: int, chunk: int = 1024 * 1792):
     with fileObj as f:
         f.seek(start)
         while (pos := f.tell()) <= end:
@@ -106,13 +106,13 @@ def getPreviewVideo(fileObj: BinaryIO, start: int, end: int, chunk: int = 1024 *
             yield f.read(readSize)
 
 
-def updateDetail(uuid, videoId, title, content, tags):
+async def updateDetail(uuid, videoId, title, content, tags):
     tagToString = ','.join(tags) if tags is not None else ''
 
     return videoModel().setVideoInfo(uuid, videoId, title, content, tagToString)
 
 
-def insertIntoVideo(uuid, videoId, bgmFileName):
+async def insertIntoVideo(uuid, videoId, bgmFileName):
     try:
         videoInfo = videoModel().getVideoInfo(uuid, videoId)
 

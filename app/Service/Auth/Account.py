@@ -5,7 +5,7 @@ import os
 from Model.Auth.User import User as userModel
 
 
-def trialStatusOff(uuid):
+async def trialStatusOff(uuid):
     try:
         userInfo = userModel().getUser(uuid)
 

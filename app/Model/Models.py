@@ -11,7 +11,7 @@ class Login(Base):
     uuid = Column(VARCHAR(255), primary_key=True, index=True, nullable=False)
     socialType = Column(INT, index=True, nullable=False)
     accessToken = Column(Text, nullable=False)
-    refreshToken = Column(Text, nullable=False)
+    refreshToken = Column(Text, nullable=True)
     idToken = Column(Text, nullable=False)
     expiresIn = Column(INT, nullable=False)
     scope = Column(Text, nullable=False)
