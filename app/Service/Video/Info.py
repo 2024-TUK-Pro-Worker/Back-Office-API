@@ -1,6 +1,5 @@
 # Python 모듈
 import os
-import time
 from pydub import *
 from typing import BinaryIO
 from moviepy.editor import *
