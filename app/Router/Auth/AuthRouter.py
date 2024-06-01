@@ -14,12 +14,12 @@ account = APIRouter(prefix='/api/account')
 
 @google.get('/login', tags=['googleAuth'])
 def getUrl():
-    return await getOAuthUrl()
+    return getOAuthUrl()
 
 
 @google.get('/callback', tags=['googleAuth'])
 def getCallback(code: str):
-    jwtToken = await authGoogle(code)
+    jwtToken = authGoogle(code)
     response = RedirectResponse(f"https://{os.getenv('FRONT_HOST')}/")
     response.set_cookie(key="authorization", value=jwtToken, path="/", domain=f"{os.getenv('DOAMIN')}")
     return response
@@ -31,7 +31,7 @@ def patchTrialStatusOff(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = await trialStatusOff(jwtData.get('uuid'))
+        result = trialStatusOff(jwtData.get('uuid'))
 
         if result['result'] is False:
             raise Exception(result['message'])

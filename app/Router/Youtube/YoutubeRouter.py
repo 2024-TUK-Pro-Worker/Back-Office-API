@@ -20,7 +20,7 @@ def postUploadToYoutube(params: RoutingModel.RQ_postUploadToYoutube, authorizati
 
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = await YoutubeService(jwtData).uploadVideo(jwtData.get('uuid'), params['videoId'])
+        result = YoutubeService(jwtData).uploadVideo(jwtData.get('uuid'), params['videoId'])
 
         if result['result'] is False:
             raise Exception(result['message'])
@@ -47,7 +47,7 @@ def deleteYoutubeVideo(params: RoutingModel.RQ_deleteYoutubeVideo, authorization
 
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = await YoutubeService(jwtData).delVideo(jwtData.get('uuid'), params['videoId'])
+        result = YoutubeService(jwtData).delVideo(jwtData.get('uuid'), params['videoId'])
 
         if result['result'] is False:
             raise Exception(result['message'])

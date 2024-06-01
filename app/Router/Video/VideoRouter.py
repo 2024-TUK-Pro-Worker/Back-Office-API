@@ -17,7 +17,7 @@ def getVideoList(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = await DetailService.getList(jwtData.get('uuid'))
+        result = DetailService.getList(jwtData.get('uuid'))
 
         if result is None:
             raise Exception('video list is None')
@@ -39,7 +39,7 @@ def getVideoDetail(videoId: int, authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = await DetailService.getDetail(jwtData.get('uuid'), videoId)
+        result = DetailService.getDetail(jwtData.get('uuid'), videoId)
 
         if result is None:
             raise Exception('video info is None')
@@ -62,7 +62,7 @@ def videoPreview(videoId: int, request: Request, authorization: Optional[str] = 
 
         rangeHeader = request.headers.get("range")
 
-        result = await DetailService.getPreviewInfo(jwtData.get('uuid'), videoId, rangeHeader)
+        result = DetailService.getPreviewInfo(jwtData.get('uuid'), videoId, rangeHeader)
 
         if result['result'] is False:
             raise Exception(result['message'])
@@ -104,7 +104,7 @@ def putVideoDetail(params: RoutingModel.RQ_setDetail, authorization: Optional[st
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = await DetailService.updateDetail(
+        result = DetailService.updateDetail(
             jwtData.get('uuid'), params.videoId, params.title,
             params.content, params.tags
         )
@@ -132,7 +132,7 @@ def patchBgmToVideo(params: RoutingModel.RQ_appendBgmToVideo, authorization: Opt
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
-        result = await DetailService.insertIntoVideo(
+        result = DetailService.insertIntoVideo(
             jwtData.get('uuid'), params.videoId, params.bgmFileName
         )
 
