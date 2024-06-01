@@ -62,8 +62,9 @@ async def add_process_time_header(request: Request, call_next):
     except Exception as e:
         return responses.JSONResponse({
             'result': 'fail',
-            'message': 'internal server error'
+            'message': e.__str__() if e.__str__() is not None else 'internal server error'
         }, status_code=500)
+
 
 # middleware cors 적용
 app.add_middleware(

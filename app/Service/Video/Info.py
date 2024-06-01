@@ -1,5 +1,6 @@
 # Python 모듈
 import os
+import time
 from pydub import *
 from typing import BinaryIO
 from moviepy.editor import *
@@ -10,6 +11,7 @@ from Model.Video.Video import Video as videoModel
 
 async def getList(uuid):
     try:
+        time.sleep(5)
         videoList = videoModel().getVideoList(uuid)
 
         if videoList is None:

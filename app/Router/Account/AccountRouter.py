@@ -16,7 +16,7 @@ bgm = APIRouter(prefix='/api/account/bgm')
 
 # 프롬프트
 @prompt.get('', tags=['prompt'], response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def getPromptInfo(authorization: Optional[str] = Cookie(None)):
+def getPromptInfo(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
@@ -38,7 +38,7 @@ async def getPromptInfo(authorization: Optional[str] = Cookie(None)):
 
 @prompt.patch('/update', tags=['prompt'],
               response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def patchPromptInfo(params: RoutingModel.RQ_patchPromptInfo, authorization: Optional[str] = Cookie(None)):
+def patchPromptInfo(params: RoutingModel.RQ_patchPromptInfo, authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
@@ -63,7 +63,7 @@ async def patchPromptInfo(params: RoutingModel.RQ_patchPromptInfo, authorization
 # 스케줄러
 @scheduler.get('/schedule', tags=['scheduler'],
                response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def getScheduleInfo(authorization: Optional[str] = Cookie(None)):
+def getScheduleInfo(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
@@ -85,7 +85,7 @@ async def getScheduleInfo(authorization: Optional[str] = Cookie(None)):
 
 @scheduler.patch('/schedule/update', tags=['scheduler'],
                  response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def patchScheduleInfo(params: RoutingModel.RQ_patchScheduleInfo, authorization: Optional[str] = Cookie(None)):
+def patchScheduleInfo(params: RoutingModel.RQ_patchScheduleInfo, authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
@@ -108,7 +108,7 @@ async def patchScheduleInfo(params: RoutingModel.RQ_patchScheduleInfo, authoriza
 
 
 @scheduler.get('/status', tags=['scheduler'], response_model=RoutingModel.RS_getSchedulerStatus)
-async def getSchedulerStatus(authorization: Optional[str] = Cookie(None)):
+def getSchedulerStatus(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
@@ -141,7 +141,7 @@ async def getSchedulerStatus(authorization: Optional[str] = Cookie(None)):
 
 @scheduler.post('/create', tags=['scheduler'],
                 response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def postSchedulerCreate(authorization: Optional[str] = Cookie(None)):
+def postSchedulerCreate(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
@@ -165,7 +165,7 @@ async def postSchedulerCreate(authorization: Optional[str] = Cookie(None)):
 
 @scheduler.delete('/delete', tags=['scheduler'],
                   response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def deleteScheduler(authorization: Optional[str] = Cookie(None)):
+def deleteScheduler(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
@@ -188,7 +188,7 @@ async def deleteScheduler(authorization: Optional[str] = Cookie(None)):
 
 
 @bgm.get('', tags=['bgm'], response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def getBgmList(authorization: Optional[str] = Cookie(None)):
+def getBgmList(authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
@@ -211,7 +211,7 @@ async def getBgmList(authorization: Optional[str] = Cookie(None)):
 
 
 @bgm.get("/preview/{bgmName}", tags=['bgm'])
-async def bgmPreview(bgmName: str, request: Request, authorization: Optional[str] = Cookie(None)):
+def bgmPreview(bgmName: str, request: Request, authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
@@ -255,7 +255,7 @@ async def bgmPreview(bgmName: str, request: Request, authorization: Optional[str
 
 
 @bgm.post('/insert', tags=['bgm'], response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def postUploadBgm(fileList: list[UploadFile], authorization: Optional[str] = Cookie(None)):
+def postUploadBgm(fileList: list[UploadFile], authorization: Optional[str] = Cookie(None)):
     try:
         jwtData = jwt.decode(authorization, os.getenv('JWT_SALT_KEY'), algorithms="HS256")
 
@@ -276,7 +276,7 @@ async def postUploadBgm(fileList: list[UploadFile], authorization: Optional[str]
 
 
 @bgm.delete('/remove', tags=['bgm'], response_model=Union[DefaultRoutingModel.RS_common, DefaultRoutingModel.RS_fail])
-async def deleteBgmFile(params: RoutingModel.RQ_deleteBgmFile, authorization: Optional[str] = Cookie(None)):
+def deleteBgmFile(params: RoutingModel.RQ_deleteBgmFile, authorization: Optional[str] = Cookie(None)):
     try:
         allowExtention = {'mp3'}
 
