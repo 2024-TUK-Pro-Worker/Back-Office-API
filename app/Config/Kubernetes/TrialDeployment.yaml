@@ -1,51 +1,53 @@
-apiVersion: v1
-kind: Pod
+apiVersion: batch/v1
+kind: Job
 metadata:
   name: ai-shorts-maker
 spec:
-  ttlSecondsAfterFinished: 180
-  containers:
-  - name: core-system
-    image: "{dockerFileImage}"
-    imagePullPolicy: Always
-    volumeMounts:
-      - name: shared-data
-        mountPath: /home/app/AI-Shorts-Maker-Service/Resource
-      - name: google-config
-        mountPath: /home/app/AI-Shorts-Maker-Service/Config/Google
-    env:
-      - name: OPENAI_API_KEY
-        value: "{OPENAI_API_KEY}"
-      - name: RESOURCE_PATH
-        value: "{RESOURCE_PATH}"
-      - name: UUID
-        value: "{UUID}"
-      - name: TRIAL_STAUTS
-        value: "Y"
-      - name: DB_HOST
-        value: "{DB_HOST}"
-      - name: DB_PORT
-        value: "{DB_PORT}"
-      - name: DB_USER
-        value: "{DB_USER}"
-      - name: DB_PW
-        value: "{DB_PW}"
-      - name: DB_NAME
-        value: "{DB_NAME}"
-      - name: DB_CHARSET
-        value: "{DB_CHARSET}"
-    command:
-      - python3
-      - main.py
-  imagePullSecrets:
-    - name: dockerhub-secret
-  volumes:
-    - name: shared-data
-      hostPath:
-        path: /home/shareDisk/fileDisk/{UUID}
-        type: Directory
-    - name: google-config
-      hostPath:
-        path: /home/shareDisk/Config/Google
-        type: Directory
-  restartPolicy: Never
+  template:
+    spec:
+      ttlSecondsAfterFinished: 180
+      containers:
+        - name: core-system
+          image: "{dockerFileImage}"
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: shared-data
+              mountPath: /home/app/AI-Shorts-Maker-Service/Resource
+            - name: google-config
+              mountPath: /home/app/AI-Shorts-Maker-Service/Config/Google
+          env:
+            - name: OPENAI_API_KEY
+              value: "{OPENAI_API_KEY}"
+            - name: RESOURCE_PATH
+              value: "{RESOURCE_PATH}"
+            - name: UUID
+              value: "{UUID}"
+            - name: TRIAL_STAUTS
+              value: "Y"
+            - name: DB_HOST
+              value: "{DB_HOST}"
+            - name: DB_PORT
+              value: "{DB_PORT}"
+            - name: DB_USER
+              value: "{DB_USER}"
+            - name: DB_PW
+              value: "{DB_PW}"
+            - name: DB_NAME
+              value: "{DB_NAME}"
+            - name: DB_CHARSET
+              value: "{DB_CHARSET}"
+          command:
+            - python3
+            - main.py
+      imagePullSecrets:
+        - name: dockerhub-secret
+      volumes:
+        - name: shared-data
+          hostPath:
+            path: /home/shareDisk/fileDisk/{UUID}
+            type: Directory
+        - name: google-config
+          hostPath:
+            path: /home/shareDisk/Config/Google
+            type: Directory
+      restartPolicy: Never
