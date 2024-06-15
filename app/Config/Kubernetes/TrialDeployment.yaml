@@ -3,7 +3,6 @@ kind: Pod
 metadata:
   name: ai-shorts-maker
 spec:
-  ttlSecondsAfterFinished: 180
   containers:
   - name: core-system
     image: "{dockerFileImage}"
